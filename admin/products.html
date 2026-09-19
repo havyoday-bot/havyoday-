@@ -1,0 +1,1265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Products Management | HAVYODAY</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f6f1e8;
+      color: #2b2118;
+    }
+
+    .header {
+      background: #4b1f12;
+      color: white;
+      padding: 18px;
+      text-align: center;
+    }
+
+    .header h1 {
+      margin: 0;
+      font-size: 24px;
+    }
+
+    .header p {
+      margin: 6px 0 0;
+      font-size: 14px;
+    }
+
+    .container {
+      max-width: 700px;
+      margin: 20px auto;
+      padding: 15px;
+    }
+
+    .box {
+      background: white;
+      padding: 18px;
+      border-radius: 14px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    }
+
+    h2 {
+      margin-top: 0;
+      font-size: 20px;
+    }
+
+    label {
+      display: block;
+      margin-top: 12px;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+
+    input,
+    textarea {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 15px;
+    }
+
+    textarea {
+      min-height: 90px;
+      resize: vertical;
+    }
+
+    .checkbox {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 15px;
+    }
+
+    .checkbox input {
+      width: auto;
+    }
+
+    .btn {
+      width: 100%;
+      border: none;
+      border-radius: 9px;
+      padding: 13px;
+      margin-top: 14px;
+      font-size: 15px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .add-btn {
+      background: #d99a28;
+      color: white;
+    }
+
+    .cancel-btn {
+      background: #777;
+      color: white;
+      display: none;
+    }
+
+    .product {
+      border: 1px solid #ddd;
+      border-radius: 12px;
+      padding: 12px;
+      margin-top: 14px;
+    }
+
+    .product img {
+      width: 100%;
+      height: 190px;
+      object-fit: cover;
+      border-radius: 9px;
+      background: #eee;
+    }
+
+    .product h3 {
+      margin: 10px 0 5px;
+    }
+
+    .price {
+      font-weight: bold;
+      font-size: 18px;
+    }
+
+    .stock {
+      margin-top: 5px;
+    }
+
+    .actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .actions button {
+      flex: 1;
+      border: none;
+      border-radius: 8px;
+      padding: 11px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .edit-btn {
+      background: #d99a28;
+      color: white;
+    }
+
+    .delete-btn {
+      background: #8b2d2d;
+      color: white;
+    }
+
+    .message {
+      text-align: center;
+      margin: 10px 0;
+      font-size: 14px;
+    }
+
+    .preview {
+      width: 100%;
+      max-height: 220px;
+      object-fit: contain;
+      margin-top: 10px;
+      border-radius: 8px;
+      display: none;
+    }
+
+    .back-btn {
+      background: #4b1f12;
+      color: white;
+    }
+
+    .empty {
+      text-align: center;
+      padding: 20px;
+      color: #777;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="header">
+    <h1>HAVYODAY</h1>
+    <p>Products Management</p>
+  </div>
+
+  <div class="container">
+
+    <!-- Add / Edit Product -->
+    <div class="box">
+
+      <h2 id="formTitle">Add Product</h2>
+
+      <form id="productForm">
+
+        <label>Product Name</label>
+        <input
+          type="text"
+          id="productName"
+          required
+        >
+
+        <label>Selling Price</label>
+        <input
+          type="number"
+          id="productPrice"
+          min="0"
+          step="0.01"
+          required
+        >
+
+        <label>Original Price (Optional)</label>
+        <input
+          type="number"
+          id="originalPrice"
+          min="0"
+          step="0.01"
+        >
+
+        <label>Discount (Optional)</label>
+        <input
+          type="number"
+          id="discount"
+          min="0"
+          step="0.01"
+        >
+
+        <label>Description</label>
+        <textarea id="description"></textarea>
+
+        <label>Stock</label>
+        <input
+          type="number"
+          id="stock"
+          min="0"
+          required
+        >
+
+        <label>Product Image</label>
+        <input
+          type="file"
+          id="productImage"
+          accept="image/*"
+        >
+
+        <img
+          id="imagePreview"
+          class="preview"
+          alt="Preview"
+        >
+
+        <div class="checkbox">
+          <input
+            type="checkbox"
+            id="featured"
+          >
+          <label
+            for="featured"
+            style="margin:0;"
+          >
+            Featured Product
+          </label>
+        </div>
+
+        <button
+          type="submit"
+          class="btn add-btn"
+          id="saveBtn"
+        >
+          Add Product
+        </button>
+
+        <button
+          type="button"
+          class="btn cancel-btn"
+          id="cancelBtn"
+        >
+          Cancel Edit
+        </button>
+
+      </form>
+
+      <div
+        id="formMessage"
+        class="message"
+      ></div>
+
+    </div>
+
+
+    <!-- Product List -->
+    <div class="box">
+
+      <h2>Products</h2>
+
+      <div
+        id="productsList"
+      >
+        <div class="empty">
+          Loading products...
+        </div>
+      </div>
+
+      <button
+        class="btn back-btn"
+        id="backDashboard"
+        type="button"
+      >
+        ← Back to Dashboard
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <script>
+
+    /* =========================
+       SUPABASE
+    ========================= */
+
+    const SUPABASE_URL =
+      "https://ebzvmhbmoowsmmffvgif.supabase.co";
+
+    const SUPABASE_KEY =
+      "sb_publishable_B-y3E6yHs2LhpFHmVkmBAQ_cMCiQgzd";
+
+    const supabaseClient =
+      window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+      );
+
+
+    const PRODUCT_TABLE = "pooja stor";
+
+    const PRODUCT_BUCKET = "New test product";
+
+
+    /* =========================
+       ELEMENTS
+    ========================= */
+
+    const productForm =
+      document.getElementById("productForm");
+
+    const productsList =
+      document.getElementById("productsList");
+
+    const productImage =
+      document.getElementById("productImage");
+
+    const imagePreview =
+      document.getElementById("imagePreview");
+
+    const formMessage =
+      document.getElementById("formMessage");
+
+    const saveBtn =
+      document.getElementById("saveBtn");
+
+    const cancelBtn =
+      document.getElementById("cancelBtn");
+
+    const formTitle =
+      document.getElementById("formTitle");
+
+
+    let editingProductId = null;
+
+    let editingImageURL = null;
+
+
+    /* =========================
+       MESSAGE
+    ========================= */
+
+    function showMessage(message) {
+
+      formMessage.textContent = message;
+
+    }
+
+
+    /* =========================
+       LOAD PRODUCTS
+    ========================= */
+
+    async function loadProducts() {
+
+      productsList.innerHTML =
+        '<div class="empty">Loading products...</div>';
+
+      const { data, error } =
+        await supabaseClient
+          .from(PRODUCT_TABLE)
+          .select(`
+            id,
+            name,
+            price,
+            description,
+            image_url,
+            stock,
+            created_at,
+            original_price,
+            discount,
+            featured
+          `)
+          .order("id", {
+            ascending: false
+          });
+
+      if (error) {
+
+        console.error(error);
+
+        productsList.innerHTML =
+          '<div class="empty">Unable to load products.</div>';
+
+        return;
+      }
+
+      if (!data || data.length === 0) {
+
+        productsList.innerHTML =
+          '<div class="empty">No products found.</div>';
+
+        return;
+      }
+
+      productsList.innerHTML = "";
+
+      data.forEach(function(product) {
+
+        const div =
+          document.createElement("div");
+
+        div.className = "product";
+
+        const image =
+          product.image_url
+            ? product.image_url
+            : "";
+
+        div.innerHTML = `
+
+          ${
+            image
+              ? `<img
+                   src="${escapeHTML(image)}"
+                   alt="${escapeHTML(product.name || "")}"
+                 >`
+              : ""
+          }
+
+          <h3>
+            ${escapeHTML(product.name || "")}
+          </h3>
+
+          <div class="price">
+            ₹${Number(product.price || 0).toFixed(2)}
+          </div>
+
+          ${
+            product.original_price
+              ? `<div>
+                   Original:
+                   ₹${Number(product.original_price).toFixed(2)}
+                 </div>`
+              : ""
+          }
+
+          ${
+            product.discount
+              ? `<div>
+                   Discount:
+                   ${Number(product.discount)}
+                 </div>`
+              : ""
+          }
+
+          <div class="stock">
+            Stock:
+            ${Number(product.stock || 0)}
+          </div>
+
+          <div class="actions">
+
+            <button
+              class="edit-btn"
+              type="button"
+              data-edit-id="${product.id}"
+            >
+              Edit
+            </button>
+
+            <button
+              class="delete-btn"
+              type="button"
+              data-delete-id="${product.id}"
+            >
+              Delete
+            </button>
+
+          </div>
+        `;
+
+        productsList.appendChild(div);
+
+      });
+
+
+      document
+        .querySelectorAll("[data-edit-id]")
+        .forEach(function(button) {
+
+          button.addEventListener(
+            "click",
+            function() {
+
+              const id =
+                Number(
+                  button.getAttribute(
+                    "data-edit-id"
+                  )
+                );
+
+              startEdit(id, data);
+
+            }
+          );
+
+        });
+
+
+      document
+        .querySelectorAll("[data-delete-id]")
+        .forEach(function(button) {
+
+          button.addEventListener(
+            "click",
+            function() {
+
+              const id =
+                Number(
+                  button.getAttribute(
+                    "data-delete-id"
+                  )
+                );
+
+              const product =
+                data.find(
+                  function(item) {
+                    return Number(item.id) === id;
+                  }
+                );
+
+              if (product) {
+                deleteProduct(product);
+              }
+
+            }
+          );
+
+        });
+
+    }
+
+
+    /* =========================
+       ESCAPE HTML
+    ========================= */
+
+    function escapeHTML(value) {
+
+      return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+
+    }
+
+
+    /* =========================
+       IMAGE PREVIEW
+    ========================= */
+
+    productImage.addEventListener(
+      "change",
+      function() {
+
+        const file =
+          productImage.files[0];
+
+        if (!file) {
+
+          imagePreview.style.display =
+            "none";
+
+          imagePreview.src = "";
+
+          return;
+        }
+
+        imagePreview.src =
+          URL.createObjectURL(file);
+
+        imagePreview.style.display =
+          "block";
+
+      }
+    );
+
+
+    /* =========================
+       ADD / EDIT PRODUCT
+    ========================= */
+
+    productForm.addEventListener(
+      "submit",
+      async function(event) {
+
+        event.preventDefault();
+
+        saveBtn.disabled = true;
+
+        showMessage("Saving...");
+
+
+        const name =
+          document
+            .getElementById("productName")
+            .value
+            .trim();
+
+        const price =
+          Number(
+            document
+              .getElementById("productPrice")
+              .value
+          );
+
+        const originalPriceValue =
+          document
+            .getElementById("originalPrice")
+            .value;
+
+        const discountValue =
+          document
+            .getElementById("discount")
+            .value;
+
+        const description =
+          document
+            .getElementById("description")
+            .value
+            .trim();
+
+        const stock =
+          Number(
+            document
+              .getElementById("stock")
+              .value
+          );
+
+        const featured =
+          document
+            .getElementById("featured")
+            .checked;
+
+        const file =
+          productImage.files[0];
+
+
+        const originalPrice =
+          originalPriceValue === ""
+            ? null
+            : Number(originalPriceValue);
+
+        const discount =
+          discountValue === ""
+            ? null
+            : Number(discountValue);
+
+
+        if (!name) {
+
+          showMessage(
+            "Product name is required."
+          );
+
+          saveBtn.disabled = false;
+
+          return;
+        }
+
+
+        if (
+          !Number.isFinite(price) ||
+          price < 0
+        ) {
+
+          showMessage(
+            "Enter a valid selling price."
+          );
+
+          saveBtn.disabled = false;
+
+          return;
+        }
+
+
+        if (
+          !Number.isFinite(stock) ||
+          stock < 0
+        ) {
+
+          showMessage(
+            "Enter a valid stock."
+          );
+
+          saveBtn.disabled = false;
+
+          return;
+        }
+
+
+        let imageURL =
+          editingImageURL;
+
+
+        /* Upload new image if selected */
+
+        if (file) {
+
+          const fileExtension =
+            file.name
+              .split(".")
+              .pop()
+              .toLowerCase();
+
+          const fileName =
+            "product_" +
+            Date.now() +
+            "_" +
+            Math.random()
+              .toString(36)
+              .substring(2) +
+            "." +
+            fileExtension;
+
+
+          const filePath =
+            fileName;
+
+
+          const { error: uploadError } =
+            await supabaseClient
+              .storage
+              .from(PRODUCT_BUCKET)
+              .upload(
+                filePath,
+                file,
+                {
+                  upsert: false
+                }
+              );
+
+
+          if (uploadError) {
+
+            console.error(uploadError);
+
+            showMessage(
+              "Image upload failed: " +
+              uploadError.message
+            );
+
+            saveBtn.disabled = false;
+
+            return;
+          }
+
+
+          const { data: publicData } =
+            supabaseClient
+              .storage
+              .from(PRODUCT_BUCKET)
+              .getPublicUrl(filePath);
+
+
+          imageURL =
+            publicData.publicUrl;
+
+        }
+
+
+        /* ADD */
+
+        if (!editingProductId) {
+
+          if (!imageURL) {
+
+            showMessage(
+              "Please select a product image."
+            );
+
+            saveBtn.disabled = false;
+
+            return;
+          }
+
+
+          const { error } =
+            await supabaseClient
+              .from(PRODUCT_TABLE)
+              .insert({
+                name: name,
+                price: price,
+                original_price: originalPrice,
+                discount: discount,
+                description:
+                  description || null,
+                image_url: imageURL,
+                stock: stock,
+                featured: featured
+              });
+
+
+          if (error) {
+
+            console.error(error);
+
+            showMessage(
+              "Product could not be added: " +
+              error.message
+            );
+
+            saveBtn.disabled = false;
+
+            return;
+          }
+
+
+          showMessage(
+            "Product added successfully."
+          );
+
+        }
+
+
+        /* EDIT */
+
+        else {
+
+          const updateData = {
+
+            name: name,
+            price: price,
+            original_price: originalPrice,
+            discount: discount,
+            description:
+              description || null,
+            stock: stock,
+            featured: featured
+
+          };
+
+
+          if (file) {
+
+            updateData.image_url =
+              imageURL;
+
+          }
+
+
+          const { error } =
+            await supabaseClient
+              .from(PRODUCT_TABLE)
+              .update(updateData)
+              .eq(
+                "id",
+                editingProductId
+              );
+
+
+          if (error) {
+
+            console.error(error);
+
+            showMessage(
+              "Product could not be updated: " +
+              error.message
+            );
+
+            saveBtn.disabled = false;
+
+            return;
+          }
+
+
+          showMessage(
+            "Product updated successfully."
+          );
+
+        }
+
+
+        resetForm();
+
+        await loadProducts();
+
+        saveBtn.disabled = false;
+
+      }
+    );
+
+
+    /* =========================
+       START EDIT
+    ========================= */
+
+    function startEdit(id, products) {
+
+      const product =
+        products.find(
+          function(item) {
+            return Number(item.id) === id;
+          }
+        );
+
+
+      if (!product) {
+        return;
+      }
+
+
+      editingProductId =
+        product.id;
+
+      editingImageURL =
+        product.image_url || null;
+
+
+      document
+        .getElementById("productName")
+        .value =
+          product.name || "";
+
+
+      document
+        .getElementById("productPrice")
+        .value =
+          product.price ?? "";
+
+
+      document
+        .getElementById("originalPrice")
+        .value =
+          product.original_price ?? "";
+
+
+      document
+        .getElementById("discount")
+        .value =
+          product.discount ?? "";
+
+
+      document
+        .getElementById("description")
+        .value =
+          product.description || "";
+
+
+      document
+        .getElementById("stock")
+        .value =
+          product.stock ?? "";
+
+
+      document
+        .getElementById("featured")
+        .checked =
+          product.featured === true;
+
+
+      productImage.value = "";
+
+
+      if (product.image_url) {
+
+        imagePreview.src =
+          product.image_url;
+
+        imagePreview.style.display =
+          "block";
+
+      }
+
+
+      formTitle.textContent =
+        "Edit Product";
+
+      saveBtn.textContent =
+        "Update Product";
+
+      cancelBtn.style.display =
+        "block";
+
+
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+      });
+
+    }
+
+
+    /* =========================
+       DELETE PRODUCT
+    ========================= */
+
+    async function deleteProduct(product) {
+
+      const confirmed =
+        confirm(
+          "Delete this product?"
+        );
+
+
+      if (!confirmed) {
+        return;
+      }
+
+
+      const { error } =
+        await supabaseClient
+          .from(PRODUCT_TABLE)
+          .delete()
+          .eq(
+            "id",
+            product.id
+          );
+
+
+      if (error) {
+
+        alert(
+          "Delete failed: " +
+          error.message
+        );
+
+        return;
+      }
+
+
+      /* Delete image from Storage */
+
+      if (product.image_url) {
+
+        const path =
+          getStoragePathFromURL(
+            product.image_url
+          );
+
+
+        if (path) {
+
+          const { error: storageError } =
+            await supabaseClient
+              .storage
+              .from(PRODUCT_BUCKET)
+              .remove([path]);
+
+
+          if (storageError) {
+
+            console.warn(
+              "Image delete failed:",
+              storageError
+            );
+
+          }
+
+        }
+
+      }
+
+
+      if (
+        editingProductId ===
+        product.id
+      ) {
+
+        resetForm();
+
+      }
+
+
+      await loadProducts();
+
+    }
+
+
+    /* =========================
+       GET STORAGE PATH
+    ========================= */
+
+    function getStoragePathFromURL(
+      imageURL
+    ) {
+
+      try {
+
+        const marker =
+          "/storage/v1/object/public/" +
+          encodeURIComponent(
+            PRODUCT_BUCKET          ) +
+          "/";
+
+
+        let index =
+          imageURL.indexOf(marker);
+
+
+        if (index === -1) {
+
+          const simpleMarker =
+            "/storage/v1/object/public/" +
+            PRODUCT_BUCKET +
+            "/";
+
+          index =
+            imageURL.indexOf(
+              simpleMarker
+            );
+
+          if (index === -1) {
+            return null;
+          }
+
+          return decodeURIComponent(
+            imageURL.substring(
+              index +
+              simpleMarker.length
+            )
+          );
+
+        }
+
+
+        return decodeURIComponent(
+          imageURL.substring(
+            index +
+            marker.length
+          )
+        );
+
+      } catch (error) {
+
+        console.error(error);
+
+        return null;
+
+      }
+
+    }
+
+
+    /* =========================
+       RESET FORM
+    ========================= */
+
+    function resetForm() {
+
+      productForm.reset();
+
+      editingProductId =
+        null;
+
+      editingImageURL =
+        null;
+
+      formTitle.textContent =
+        "Add Product";
+
+      saveBtn.textContent =
+        "Add Product";
+
+      cancelBtn.style.display =
+        "none";
+
+      imagePreview.src = "";
+
+      imagePreview.style.display =
+        "none";
+
+      showMessage("");
+
+    }
+
+
+    cancelBtn.addEventListener(
+      "click",
+      function() {
+
+        resetForm();
+
+      }
+    );
+
+
+    /* =========================
+       BACK TO DASHBOARD
+    ========================= */
+
+    document
+      .getElementById("backDashboard")
+      .addEventListener(
+        "click",
+        function() {
+
+          window.location.href =
+            "dashboard.html";
+
+        }
+      );
+
+
+    /* =========================
+       START
+    ========================= */
+
+    document.addEventListener(
+      "DOMContentLoaded",
+      function() {
+
+        loadProducts();
+
+      }
+    );
+
+  </script>
+
+</body>
+</html>
+ 
