@@ -1,4 +1,4 @@
-l<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -16,6 +16,7 @@ l<!DOCTYPE html>
     margin: 0;
     color: #1a1a1a;
   }
+
   .card {
     background: #ffffff;
     width: 100%;
@@ -25,12 +26,13 @@ l<!DOCTYPE html>
     border-radius: 6px;
     box-sizing: border-box;
   }
-  
+
   .top-nav {
     display: flex;
     justify-content: flex-start;
     align-items: center;
   }
+
   .top-home-btn {
     display: inline-flex;
     align-items: center;
@@ -46,6 +48,7 @@ l<!DOCTYPE html>
     background: #fbf9f5;
     transition: all 0.2s;
   }
+
   .top-home-btn:hover {
     background: #f0ebe1;
     color: #111;
@@ -72,7 +75,7 @@ l<!DOCTYPE html>
     margin: 0 0 8px 0;
     color: #111;
   }
-  
+
   .subtitle {
     text-align: center;
     font-size: 13px;
@@ -89,6 +92,7 @@ l<!DOCTYPE html>
     margin-bottom: 24px;
     text-align: center;
   }
+
   .order-id-label {
     font-size: 10.5px;
     text-transform: uppercase;
@@ -97,6 +101,7 @@ l<!DOCTYPE html>
     margin-bottom: 6px;
     font-weight: 600;
   }
+
   .order-id-value {
     font-family: 'Plus Jakarta Sans', sans-serif;
     font-size: 16px;
@@ -135,14 +140,17 @@ l<!DOCTYPE html>
     transition: background 0.3s;
     box-sizing: border-box;
   }
+
   .btn-home:hover {
     background-color: #333;
   }
 </style>
 </head>
+
 <body>
 
   <div class="card">
+
     <div class="top-nav">
       <a href="#" onclick="goHome(event)" class="top-home-btn">
         <span>←</span> Home
@@ -150,29 +158,40 @@ l<!DOCTYPE html>
     </div>
 
     <div class="large-logo">Havyoday</div>
-    
+
     <h1>Order Received</h1>
-    <div class="subtitle">Your requisition has been acknowledged and is queued for verification.</div>
-    
+
+    <div class="subtitle">
+      Your requisition has been acknowledged and is queued for verification.
+    </div>
+
     <div class="order-id-section">
       <div class="order-id-label">Reference Order ID</div>
       <div class="order-id-value" id="uniqueSupabaseId">Pending ID...</div>
     </div>
-    
+
     <div class="stylish-note">
       "Thank you for joining Havyoday. Our team will contact you shortly."
     </div>
-    
-    <a href="#" onclick="goHome(event)" class="btn-home">Return to Home</a>
+
+    <a href="#" onclick="goHome(event)" class="btn-home">
+      Return to Home
+    </a>
+
   </div>
 
   <script>
     function loadUniqueOrderId() {
       const urlParams = new URLSearchParams(window.location.search);
-      // Sirf real ID / query param / global var uthayega, random fallback hata diya
-      const realId = urlParams.get('order_id') || urlParams.get('id') || window.SUPABASE_ORDER_ID;
-      
+
+      // Sirf real ID / query param / global var uthayega
+      const realId =
+        urlParams.get('order_id') ||
+        urlParams.get('id') ||
+        window.SUPABASE_ORDER_ID;
+
       const el = document.getElementById('uniqueSupabaseId');
+
       if (realId) {
         el.innerText = realId;
       } else {
@@ -184,9 +203,11 @@ l<!DOCTYPE html>
 
     function goHome(e) {
       e.preventDefault();
-      window.location.href = '/'; 
+
+      // GitHub Pages ke same project ke index.html par jayega
+      window.location.href = './index.html';
     }
   </script>
+
 </body>
 </html>
-
