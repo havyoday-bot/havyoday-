@@ -692,10 +692,20 @@ function displayOrder(order) {
     formatMoney(order.total_amount);
 
 
-  document.getElementById(
-    "productsText"
-  ).textContent =
-    order.products || "—";
+  document.getElementById("productsText").textContent =
+  Array.isArray(order.products)
+    ? order.products.map(p =>
+        p.name || p.product_name || p.title || "Product"
+      ).join(", ")
+    : (
+        typeof order.products === "object" &&
+        order.products !== null
+          ? order.products.name ||
+            order.products.product_name ||
+            order.products.title ||
+            "Product"
+          : order.products || "—"
+      );
 
 
   updateStatus(
