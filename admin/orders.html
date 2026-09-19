@@ -1,0 +1,1162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>HAVYODAY - Orders Management</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f7f4ed;
+      color: #222;
+    }
+
+    header {
+      background: #17120d;
+      color: #d4af37;
+      padding: 18px 16px;
+      text-align: center;
+      border-bottom: 2px solid #d4af37;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 24px;
+    }
+
+    header p {
+      margin: 6px 0 0;
+      color: #fff;
+      font-size: 13px;
+    }
+
+    .topbar {
+      display: flex;
+      gap: 10px;
+      padding: 15px;
+      background: #fff;
+      border-bottom: 1px solid #ddd;
+      flex-wrap: wrap;
+    }
+
+    button {
+      border: none;
+      border-radius: 8px;
+      padding: 11px 15px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    #dashboardBtn {
+      background: #17120d;
+      color: #d4af37;
+    }
+
+    #refreshBtn {
+      background: #d4af37;
+      color: #17120d;
+    }
+
+    #message {
+      width: 100%;
+      padding: 0 15px 10px;
+      font-size: 14px;
+      color: #555;
+    }
+
+    #ordersList {
+      padding: 15px;
+      max-width: 900px;
+      margin: auto;
+    }
+
+    .loading,
+    .empty,
+    .error {
+      background: #fff;
+      border-radius: 12px;
+      padding: 25px;
+      text-align: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,.08);
+    }
+
+    .error {
+      color: #b00020;
+    }
+
+    .order-card {
+      background: #fff;
+      margin-bottom: 18px;
+      border-radius: 14px;
+      padding: 18px;
+      box-shadow: 0 3px 12px rgba(0,0,0,.09);
+    }
+
+    .order-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid #eee;
+      padding-bottom: 12px;
+      margin-bottom: 12px;
+    }
+
+    .order-id {
+      font-weight: bold;
+      color: #17120d;
+    }
+
+    .status {
+      padding: 7px 11px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: bold;
+      text-transform: capitalize;
+    }
+
+    .status.pending {
+      background: #fff3cd;
+      color: #856404;
+    }
+
+    .status.dispatched {
+      background: #cfe2ff;
+      color: #084298;
+    }
+
+    .status.delivered {
+      background: #d1e7dd;
+      color: #0f5132;
+    }
+
+    .info {
+      margin: 7px 0;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .label {
+      font-weight: bold;
+      color: #555;
+    }
+
+    .products-box {
+      margin-top: 15px;
+      padding-top: 12px;
+      border-top: 1px solid #eee;
+    }
+
+    .product-item {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .product-image {
+      width: 72px;
+      height: 72px;
+      object-fit: cover;
+      border-radius: 10px;
+      border: 1px solid #ddd;
+      background: #f5f5f5;
+      flex-shrink: 0;
+    }
+
+    .product-details {
+      flex: 1;
+    }
+
+    .product-name {
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+
+    .product-quantity {
+      font-size: 13px;
+      color: #666;
+    }
+
+    .amount {
+      margin-top: 15px;
+      padding-top: 12px;
+      border-top: 1px solid #ddd;
+      font-size: 18px;
+      font-weight: bold;
+      color: #17120d;
+    }
+
+    .action-area {
+      margin-top: 15px;
+    }
+
+    .status-btn {
+      width: 100%;
+      background: #17120d;
+      color: #d4af37;
+      padding: 13px;
+      border-radius: 9px;
+    }
+
+    .status-btn:disabled {
+      opacity: .6;
+      cursor: not-allowed;
+    }
+
+    @media (max-width: 500px) {
+      .order-card {
+        padding: 14px;
+      }
+
+      .product-image {
+        width: 62px;
+        height: 62px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <h1>HAVYODAY</h1>
+    <p>Orders Management</p>
+  </header>
+
+  <div class="topbar">
+    <button id="dashboardBtn">← Dashboard</button>
+    <button id="refreshBtn">↻ Refresh Orders</button>
+  </div>
+
+  <div id="message"></div>
+
+  <main id="ordersList">
+    <div class="loading">Loading orders...</div>
+  </main>
+
+  <script>
+    /* =========================
+       SUPABASE CONFIG
+    ========================= */
+
+    const SUPABASE_URL =
+      "https://ebzvmhbmoowsmmffvgif.supabase.co";
+
+    const SUPABASE_KEY =
+      "sb_publishable_B-y3E6yHs2LhpFHmVkmBAQ_cMCiQgzd";
+
+    const ORDER_TABLE = "orders";
+    const PRODUCT_TABLE = "pooja stor";
+
+    const supabaseClient =
+      window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+      );
+
+
+    /* =========================
+       ELEMENTS
+    ========================= */
+
+    const ordersList =
+      document.getElementById("ordersList");
+
+    const message =
+      document.getElementById("message");
+
+
+    /* =========================
+       BASIC HELPERS
+    ========================= */
+
+    function escapeHTML(value) {
+
+      if (value === null || value === undefined) {
+        return "";
+      }
+
+      return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+
+    function formatDate(value) {
+
+      if (!value) {
+        return "—";
+      }
+
+      const date = new Date(value);
+
+      if (Number.isNaN(date.getTime())) {
+        return "—";
+      }
+
+      return date.toLocaleString("en-IN", {
+        dateStyle: "medium",
+        timeStyle: "short"
+      });
+    }
+
+
+    function normalizeStatus(status) {
+
+      const value =
+        String(status || "pending")
+          .trim()
+          .toLowerCase();
+
+      if (value === "dispatched") {
+        return "dispatched";
+      }
+
+      if (value === "delivered") {
+        return "delivered";
+      }
+
+      return "pending";
+    }
+
+
+    function nextStatus(status) {
+
+      const current =
+        normalizeStatus(status);
+
+      if (current === "pending") {
+        return "dispatched";
+      }
+
+      if (current === "dispatched") {
+        return "delivered";
+      }
+
+      return null;
+    }
+
+
+    function statusButtonText(status) {
+
+      const current =
+        normalizeStatus(status);
+
+      if (current === "pending") {
+        return "Dispatch Order";
+      }
+
+      if (current === "dispatched") {
+        return "Mark as Delivered";
+      }
+
+      return "Order Delivered";
+    } 
+    /* =========================
+       PRODUCT DATA HELPERS
+    ========================= */
+
+    function normalizeProducts(products) {
+
+      if (!products) {
+        return [];
+      }
+
+      if (Array.isArray(products)) {
+        return products;
+      }
+
+      if (typeof products === "string") {
+
+        try {
+          const parsed = JSON.parse(products);
+
+          if (Array.isArray(parsed)) {
+            return parsed;
+          }
+
+          if (parsed && typeof parsed === "object") {
+            return [parsed];
+          }
+
+        } catch (error) {
+          return [];
+        }
+      }
+
+      if (typeof products === "object") {
+
+        if (Array.isArray(products.items)) {
+          return products.items;
+        }
+
+        return [products];
+      }
+
+      return [];
+    }
+
+
+    function getProductId(product) {
+
+      return (
+        product?.id ??
+        product?.product_id ??
+        product?.productId ??
+        null
+      );
+    }
+
+
+    function getProductName(product) {
+
+      return (
+        product?.name ??
+        product?.product_name ??
+        product?.productName ??
+        "Product"
+      );
+    }
+
+
+    function getProductQuantity(product) {
+
+      const quantity =
+        product?.quantity ??
+        product?.qty ??
+        product?.count ??
+        1;
+
+      const number =
+        Number(quantity);
+
+      return Number.isFinite(number) && number > 0
+        ? number
+        : 1;
+    }
+
+
+    function getProductImage(product) {
+
+      return (
+        product?.image_url ??
+        product?.imageUrl ??
+        product?.image ??
+        product?.product_image ??
+        product?.productImage ??
+        ""
+      );
+    }
+
+
+    /* =========================
+       LOAD PRODUCT IMAGE
+    ========================= */
+
+    async function findProductImage(product) {
+
+      const directImage =
+        getProductImage(product);
+
+      if (directImage) {
+        return directImage;
+      }
+
+      const productId =
+        getProductId(product);
+
+      if (productId !== null) {
+
+        const { data, error } =
+          await supabaseClient
+            .from(PRODUCT_TABLE)
+            .select("id, image_url")
+            .eq("id", productId)
+            .maybeSingle();
+
+        if (!error && data?.image_url) {
+          return data.image_url;
+        }
+      }
+
+
+      const productName =
+        getProductName(product);
+
+      if (productName) {
+
+        const { data, error } =
+          await supabaseClient
+            .from(PRODUCT_TABLE)
+            .select("id, name, image_url")
+            .eq("name", productName)
+            .maybeSingle();
+
+        if (!error && data?.image_url) {
+          return data.image_url;
+        }
+      }
+
+      return "";
+    }
+
+
+    /* =========================
+       CREATE PRODUCT HTML
+    ========================= */
+
+    async function createProductHTML(products) {
+
+      const items =
+        normalizeProducts(products);
+
+      if (!items.length) {
+
+        return `
+          <div class="products-box">
+            <div class="info">
+              <span class="label">
+                Products:
+              </span>
+              No product details available.
+            </div>
+          </div>
+        `;
+      }
+
+
+      const htmlParts = [];
+
+
+      for (const product of items) {
+
+        const name =
+          getProductName(product);
+
+        const quantity =
+          getProductQuantity(product);
+
+        let imageURL = "";
+
+        try {
+
+          imageURL =
+            await findProductImage(product);
+
+        } catch (error) {
+
+          imageURL = "";
+        }
+
+
+        const imageHTML =
+          imageURL
+            ? `
+              <img
+                class="product-image"
+                src="${escapeHTML(imageURL)}"
+                alt="${escapeHTML(name)}"
+                onerror="this.style.display='none';"
+              >
+            `
+            : `
+              <div
+                class="product-image"
+                style="
+                  display:flex;
+                  align-items:center;
+                  justify-content:center;
+                  font-size:11px;
+                  color:#777;
+                  text-align:center;
+                  padding:5px;
+                "
+              >
+                Image Unavailable
+              </div>
+            `;
+
+
+        htmlParts.push(`
+          <div class="product-item">
+
+            ${imageHTML}
+
+            <div class="product-details">
+
+              <div class="product-name">
+                ${escapeHTML(name)}
+              </div>
+
+              <div class="product-quantity">
+                Quantity: ${quantity}
+              </div>
+
+            </div>
+
+          </div>
+        `);
+      }
+
+
+      return `
+        <div class="products-box">
+
+          <div class="info">
+            <span class="label">
+              Products:
+            </span>
+          </div>
+
+          ${htmlParts.join("")}
+
+        </div>
+      `;
+    }
+
+
+    /* =========================
+       CREATE ORDER CARD
+    ========================= */
+
+    async function createOrderCard(order) {
+
+      const status =
+        normalizeStatus(order.status);
+
+      const next =
+        nextStatus(status);
+
+
+      const productHTML =
+        await createProductHTML(
+          order.products
+        );
+
+
+      let actionHTML = "";
+
+
+      if (next) {
+
+        actionHTML = `
+          <div class="action-area">
+
+            <button
+              class="status-btn"
+              data-order-id="${escapeHTML(order.id)}"
+              data-next-status="${escapeHTML(next)}"
+            >
+              ${statusButtonText(status)}
+            </button>
+
+          </div>
+        `;
+
+      } else {
+
+        actionHTML = `
+          <div class="action-area">
+
+            <button
+              class="status-btn"
+              disabled
+            >
+              Order Delivered
+            </button>
+
+          </div>
+        `;
+      }
+
+
+      const card =
+        document.createElement("div");
+
+      card.className =
+        "order-card";
+
+
+      card.innerHTML = `
+
+        <div class="order-header">
+
+          <div class="order-id">
+            Order ID:
+            ${escapeHTML(order.order_id || order.id)}
+          </div>
+
+          <div class="status ${status}">
+            ${escapeHTML(status)}
+          </div>
+
+        </div>
+
+
+        <div class="info">
+          <span class="label">
+            Customer:
+          </span>
+          ${escapeHTML(order.customer_name)}
+        </div>
+
+
+        ${
+          order.mobile
+            ? `
+              <div class="info">
+                <span class="label">
+                  Mobile:
+                </span>
+                ${escapeHTML(order.mobile)}
+              </div>
+            `
+            : ""
+        }
+
+
+        ${
+          order.whatsapp_number
+            ? `
+              <div class="info">
+                <span class="label">
+                  WhatsApp:
+                </span>
+                ${escapeHTML(order.whatsapp_number)}
+              </div>
+            `
+            : ""
+        }
+
+
+        ${
+          order.address
+            ? `
+              <div class="info">
+                <span class="label">
+                  Address:
+                </span>
+                ${escapeHTML(order.address)}
+              </div>
+            `
+            : ""
+        }
+
+
+        ${
+          order.city
+            ? `
+              <div class="info">
+                <span class="label">
+                  City:
+                </span>
+                ${escapeHTML(order.city)}
+              </div>
+            `
+            : ""
+        }
+
+
+        ${
+          order.state
+            ? `
+              <div class="info">
+                <span class="label">
+                  State:
+                </span>
+                ${escapeHTML(order.state)}
+              </div>
+            `
+            : ""
+        }
+
+
+        ${
+          order.pincode
+            ? `
+              <div class="info">
+                <span class="label">
+                  Pincode:
+                </span>
+                ${escapeHTML(order.pincode)}
+              </div>
+            `
+            : ""
+        }
+
+
+        ${
+          order.landmark
+            ? `
+              <div class="info">
+                <span class="label">
+                  Landmark:
+                </span>
+                ${escapeHTML(order.landmark)}
+              </div>
+            `
+            : ""
+    } 
+    ${
+          order.order_date
+            ? `
+              <div class="info">
+                <span class="label">
+                  Order Date:
+                </span>
+                ${escapeHTML(
+                  formatDate(order.order_date)
+                )}
+              </div>
+            `
+            : ""
+        }
+
+
+        ${
+          order.payment_method
+            ? `
+              <div class="info">
+                <span class="label">
+                  Payment:
+                </span>
+                ${escapeHTML(
+                  order.payment_method
+                )}
+              </div>
+            `
+            : ""
+        }
+
+
+        ${productHTML}
+
+
+        <div class="amount">
+          Total:
+          ₹${Number(
+            order.total_amount || 0
+          ).toFixed(2)}
+        </div>
+
+
+        ${actionHTML}
+
+      `;
+
+
+      ordersList.appendChild(card);
+    }
+
+
+    /* =========================
+       LOAD ORDERS
+    ========================= */
+
+    async function loadOrders() {
+
+      ordersList.innerHTML = `
+        <div class="loading">
+          Loading orders...
+        </div>
+      `;
+
+      message.textContent = "";
+
+
+      try {
+
+        const {
+          data,
+          error
+        } = await supabaseClient
+          .from(ORDER_TABLE)
+          .select(`
+            id,
+            customer_name,
+            address,
+            order_id,
+            mobile,
+            city,
+            whatsapp_number,
+            state,
+            pincode,
+            landmark,
+            quantity,
+            order_date,
+            payment_method,
+            products,
+            total_amount,
+            status
+          `)
+          .order(
+            "order_date",
+            {
+              ascending: false
+            }
+          );
+
+
+        if (error) {
+          throw error;
+        }
+
+
+        if (!data || !data.length) {
+
+          ordersList.innerHTML = `
+            <div class="empty">
+              No orders found.
+            </div>
+          `;
+
+          return;
+        }
+
+
+        ordersList.innerHTML = "";
+
+
+        for (const order of data) {
+
+          await createOrderCard(order);
+
+        }
+
+      } catch (error) {
+
+        console.error(
+          "Load orders error:",
+          error
+        );
+
+        ordersList.innerHTML = `
+          <div class="error">
+            Failed to load orders.<br><br>
+            ${escapeHTML(
+              error.message ||
+              "Unknown error"
+            )}
+          </div>
+        `;
+      }
+    }
+
+
+    /* =========================
+       UPDATE ORDER STATUS
+    ========================= */
+
+    async function updateOrderStatus(
+      id,
+      newStatus,
+      button
+    ) {
+
+      if (!id || !newStatus) {
+        return;
+      }
+
+
+      button.disabled = true;
+      button.textContent = "Updating...";
+
+      message.textContent = "";
+
+
+      try {
+
+        const {
+          data: updatedRows,
+          error
+        } = await supabaseClient
+          .from(ORDER_TABLE)
+          .update({
+            status: newStatus
+          })
+          .eq("id", id)
+          .select("id, status");
+
+
+        if (error) {
+          throw error;
+        }
+
+
+        if (
+          !updatedRows ||
+          updatedRows.length === 0
+        ) {
+
+          throw new Error(
+            "Status update was not saved. Check the Orders table RLS UPDATE policy."
+          );
+        }
+
+
+        const savedStatus =
+          normalizeStatus(
+            updatedRows[0].status
+          );
+
+
+        if (savedStatus !== newStatus) {
+
+          throw new Error(
+            "Supabase returned a different status after update."
+          );
+        }
+
+
+        message.textContent =
+          "Order status updated successfully.";
+
+
+        await loadOrders();
+
+      } catch (error) {
+
+        console.error(
+          "Status update error:",
+          error
+        );
+
+        message.textContent =
+          "Status update failed: " +
+          (
+            error.message ||
+            "Unknown error"
+          );
+
+        await loadOrders();
+      }
+    }
+
+
+    /* =========================
+       BUTTON EVENTS
+    ========================= */
+
+    ordersList.addEventListener(
+      "click",
+      function(event) {
+
+        const button =
+          event.target.closest(
+            ".status-btn"
+          );
+
+
+        if (!button) {
+          return;
+        }
+
+
+        const orderId =
+          button.dataset.orderId;
+
+        const next =
+          button.dataset.nextStatus;
+
+
+        updateOrderStatus(
+          orderId,
+          next,
+          button
+        );
+      }
+    );
+
+
+    /* =========================
+       DASHBOARD BUTTON
+    ========================= */
+
+    document
+      .getElementById("dashboardBtn")
+      .addEventListener(
+        "click",
+        function() {
+
+          window.location.href =
+            "dashboard.html";
+
+        }
+      );
+
+
+    /* =========================
+       REFRESH BUTTON
+    ========================= */
+
+    document
+      .getElementById("refreshBtn")
+      .addEventListener(
+        "click",
+        function() {
+
+          loadOrders();
+
+        }
+      );
+
+
+    /* =========================
+       REALTIME ORDER UPDATE
+    ========================= */
+
+    supabaseClient
+      .channel("orders-admin-realtime")
+      .on(
+        "postgres_changes",
+        {
+          event: "UPDATE",
+          schema: "public",
+          table: ORDER_TABLE
+        },
+        function(payload) {
+
+          console.log(
+            "Order updated:",
+            payload.new
+          );
+
+          loadOrders();
+
+        }
+      )
+      .subscribe();
+
+
+    /* =========================
+       INITIAL LOAD
+    ========================= */
+
+    document.addEventListener(
+      "DOMContentLoaded",
+      function() {
+
+        loadOrders();
+
+      }
+    );
+
+  </script>
+
+</body>
+</html>
