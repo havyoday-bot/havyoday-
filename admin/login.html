@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>Admin Login | HAVYODAY</title>
+
+  <!-- Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      font-family: Arial, Helvetica, sans-serif;
+      background:
+        radial-gradient(
+          circle at top,
+          #3a2a1a 0%,
+          #17120d 45%,
+          #090807 100%
+        );
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .login-wrapper {
+      width: 100%;
+      max-width: 430px;
+    }
+
+    .login-card {
+      position: relative;
+      overflow: hidden;
+      background: rgba(24, 20, 16, 0.96);
+      border: 1px solid rgba(212, 167, 78, 0.35);
+      border-radius: 24px;
+      padding: 35px 28px 30px;
+      box-shadow:
+        0 25px 70px rgba(0, 0, 0, 0.55),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(15px);
+    }
+
+    .login-card::before {
+      content: "";
+      position: absolute;
+      width: 190px;
+      height: 190px;
+      border-radius: 50%;
+      background: rgba(212, 167, 78, 0.07);
+      top: -100px;
+      right: -70px;
+    }
+
+    .brand {
+      text-align: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    .om {
+      width: 74px;
+      height: 74px;
+      margin: 0 auto 16px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid rgba(212, 167, 78, 0.55);
+      background: rgba(212, 167, 78, 0.08);
+      color: #e6bd68;
+      font-size: 43px;
+      box-shadow:
+        0 0 30px rgba(212, 167, 78, 0.12);
+    }
+
+    .brand h1 {
+      font-size: 28px;
+      letter-spacing: 2px;
+      color: #e8c16d;
+      margin-bottom: 7px;
+    }
+
+    .brand .subtitle {
+      font-size: 12px;
+      color: #a9a39b;
+      letter-spacing: 2px;
+    }
+
+    .welcome {
+      text-align: center;
+      margin: 30px 0 25px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .welcome h2 {
+      font-size: 21px;
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+
+    .welcome p {
+      font-size: 13px;
+      line-height: 1.6;
+      color: #aaa39a;
+    }
+
+    .form-group {
+      margin-bottom: 18px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 13px;
+      color: #c9c1b7;
+      margin-bottom: 8px;
+    }
+
+    .input-box input {
+      width: 100%;
+      height: 52px;
+      border-radius: 13px;
+      border: 1px solid #40372e;
+      outline: none;
+      background: #11100e;
+      color: #ffffff;
+      padding: 0 15px;
+      font-size: 15px;
+      transition: 0.25s ease;
+    }
+
+    .input-box input:focus {
+      border-color: #cfa652;
+      box-shadow:
+        0 0 0 3px rgba(207, 166, 82, 0.10);
+    }
+
+    .input-box input::placeholder {
+      color: #69645e;
+    }
+
+    .login-button {
+      width: 100%;
+      height: 53px;
+      border: none;
+      border-radius: 13px;
+      background: linear-gradient(
+        135deg,
+        #d8ad55,
+        #a87824
+      );
+      color: #15110b;
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: 0.4px;
+      cursor: pointer;
+      margin-top: 5px;
+      transition: 0.25s ease;
+      box-shadow:
+        0 10px 25px rgba(168, 120, 36, 0.20);
+    }
+
+    .login-button:hover {
+      transform: translateY(-1px);
+      box-shadow:
+        0 14px 30px rgba(168, 120, 36, 0.28);
+    }
+
+    .login-button:disabled {
+      opacity: 0.65;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .message {
+      display: none;
+      margin-top: 16px;
+      padding: 12px 13px;
+      border-radius: 10px;
+      font-size: 13px;
+      line-height: 1.5;
+      text-align: center;
+    }
+
+    .message.error {
+      display: block;
+      background: rgba(180, 50, 50, 0.12);
+      border: 1px solid rgba(220, 80, 80, 0.25);
+      color: #ffaaa3;
+    }
+
+    .message.success {
+      display: block;
+      background: rgba(60, 150, 90, 0.12);
+      border: 1px solid rgba(80, 180, 110, 0.25);
+      color: #9ee3b1;
+    }
+
+    .footer {
+      text-align: center;
+      margin-top: 25px;
+      font-size: 11px;
+      color: #68635c;
+    }
+
+    .footer strong {
+      color: #9d8146;
+      font-weight: 500;
+    }
+
+    @media (max-width: 480px) {
+      body {
+        padding: 15px;
+      }
+
+      .login-card {
+        padding: 30px 21px 25px;
+        border-radius: 21px;
+      }
+
+      .brand h1 {
+        font-size: 25px;
+      }
+
+      .welcome h2 {
+        font-size: 19px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="login-wrapper">
+
+    <div class="login-card">
+
+      <div class="brand">
+
+        <div class="om">ॐ</div>
+
+        <h1>HAVYODAY</h1>
+
+        <div class="subtitle">
+          ADMIN PANEL
+        </div>
+
+      </div>
+
+      <div class="welcome">
+
+        <h2>Welcome, Prashant Sharma</h2>
+
+        <p>
+          Founder of HAVYODAY
+          <br>
+          Please login to continue to your Admin Panel.
+        </p>
+
+      </div>
+
+      <form id="loginForm">
+
+        <div class="form-group">
+
+          <label for="email">
+            Email Address
+          </label>
+
+          <div class="input-box">
+
+            <input
+              type="email"
+              id="email"
+              placeholder="Enter your admin email"
+              autocomplete="email"
+              required
+            >
+
+          </div>
+
+        </div>
+
+        <div class="form-group">
+
+          <label for="password">
+            Password
+          </label>
+
+          <div class="input-box">
+
+            <input
+              type="password"
+              id="password"
+              placeholder="Enter your password"
+              autocomplete="current-password"
+              required
+            >
+
+          </div>
+
+        </div>
+
+        <button
+          type="submit"
+          class="login-button"
+          id="loginButton"
+        >
+          Login to Admin Panel
+        </button>
+
+      </form>
+
+      <div
+        id="message"
+        class="message"
+      ></div>
+
+      <div class="footer">
+        Secure Admin Access •
+        <strong>HAVYODAY</strong>
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <script>
+
+    /* =========================================
+       SUPABASE CONNECTION
+       ========================================= */
+
+    const SUPABASE_URL =
+      "https://ebzvmhbmoowsmmffvgif.supabase.co";
+
+    const SUPABASE_PUBLISHABLE_KEY =
+      "sb_publishable_B-y3E6yHs2LhpFHmVkmBAQ_cMCiQgzd";
+
+
+    const supabaseClient =
+      window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_PUBLISHABLE_KEY
+      );
+
+
+    /* =========================================
+       ELEMENTS
+       ========================================= */
+
+    const loginForm =
+      document.getElementById("loginForm");
+
+    const loginButton =
+      document.getElementById("loginButton");
+
+    const message =
+      document.getElementById("message");
+
+
+    /* =========================================
+       MESSAGE
+       ========================================= */
+
+    function showMessage(text, type) {
+
+      message.textContent = text;
+
+      message.className =
+        "message " + type;
+
+    }
+
+
+    /* =========================================
+       CHECK EXISTING LOGIN
+       ========================================= */
+
+    async function checkSession() {
+
+      try {
+
+        const {
+          data,
+          error
+        } = await supabaseClient.auth.getSession();
+
+        if (error) {
+
+          console.error(error);
+
+          return;
+
+        }
+
+        if (
+          data &&
+          data.session
+        ) {
+
+          window.location.href =
+            "dashboard.html";
+
+        }
+
+      } catch (error) {
+
+        console.error(
+          "Session check error:",
+          error
+        );
+
+      }
+
+    }
+
+
+    /* =========================================
+       LOGIN
+       ========================================= */
+
+    loginForm.addEventListener(
+      "submit",
+      async function(event) {
+
+        event.preventDefault();
+
+        const email =
+          document
+            .getElementById("email")
+            .value
+            .trim();
+
+        const password =
+          document
+            .getElementById("password")
+            .value;
+
+
+        if (!email || !password) {
+
+          showMessage(
+            "Please enter your email and password.",
+            "error"
+          );
+
+          return;
+
+        }
+
+
+        loginButton.disabled = true;
+
+        loginButton.textContent =
+          "Logging in...";
+
+
+        try {
+
+          const {
+            data,
+            error
+          } =
+            await supabaseClient.auth
+              .signInWithPassword({
+                email: email,
+                password: password
+              });
+
+
+          if (error) {
+
+            console.error(
+              "Supabase login error:",
+              error
+            );
+
+            showMessage(
+              error.message ||
+              "Invalid email or password.",
+              "error"
+            );
+
+            loginButton.disabled = false;
+
+            loginButton.textContent =
+              "Login to Admin Panel";
+
+            return;
+
+          }
+
+
+          if (
+            data &&
+            data.session
+          ) {
+
+            showMessage(
+              "Login successful. Opening Admin Panel...",
+              "success"
+            );
+
+
+            setTimeout(function() {
+
+              window.location.href =
+                "dashboard.html";
+
+            }, 700);
+
+          } else {
+
+            showMessage(
+              "Login could not be completed. Please try again.",
+              "error"
+            );
+
+            loginButton.disabled = false;
+
+            loginButton.textContent =
+              "Login to Admin Panel";
+
+          }
+
+        } catch (error) {
+
+          console.error(
+            "Login error:",
+            error
+          );
+
+          showMessage(
+            "Something went wrong. Please try again.",
+            "error"
+          );
+
+          loginButton.disabled = false;
+
+          loginButton.textContent =
+            "Login to Admin Panel";
+
+        }
+
+      }
+    );
+
+
+    /* =========================================
+       START
+       ========================================= */
+
+    // IMPORTANT:
+    // Keep this commented for now.
+    // It prevents the previous blank-page/auto-redirect issue.
+
+    // checkSession();
+
+  </script>
+
+</body>
+</html>
