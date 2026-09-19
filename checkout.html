@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Checkout | HAVYODAY</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .checkout-page { min-height: 80vh; padding: 40px 20px 80px; background: #faf7f0; }
+    .checkout-container { max-width: 650px; margin: 0 auto; background: #fff; border: 1px solid #ead7aa; border-radius: 20px; padding: 30px; box-shadow: 0 10px 30px rgba(56,37,27,0.06); width: 100%; box-sizing: border-box; }
+    .checkout-title { font-family: "Cormorant Garamond", serif; font-size: 38px; color: #38251b; margin-bottom: 8px; }
+    .checkout-subtitle { color: #6f655d; font-size: 14px; margin-bottom: 24px; }
+    
+    .checkout-items-section { background: #faf7f0; border: 1px solid #ead7aa; border-radius: 12px; padding: 16px; margin-bottom: 25px; }
+    .checkout-items-heading { font-weight: 700; color: #38251b; font-size: 15px; margin-bottom: 12px; border-bottom: 1px solid #d8c5a2; padding-bottom: 8px; }
+    .checkout-item-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 0; border-bottom: 1px dashed #ead7aa; font-size: 14px; color: #38251b; }
+    .checkout-item-row:last-child { border-bottom: none; }
+    .checkout-item-left { display: flex; align-items: center; gap: 10px; flex: 1; }
+    .checkout-item-img { width: 48px; height: 48px; object-fit: contain; border-radius: 8px; background: #fff; border: 1px solid #ead7aa; flex-shrink: 0; }
+    .checkout-item-name { font-weight: 600; line-height: 1.3; }
+    .checkout-item-qty { font-size: 12px; color: #6f655d; }
+    .checkout-item-price { font-weight: 700; color: #8d6423; white-space: nowrap; }
+    .checkout-total-row { display: flex; justify-content: space-between; align-items: center; margin-top: 14px; padding-top: 12px; border-top: 1px solid #d8c5a2; font-weight: 700; font-size: 18px; color: #38251b; }
+
+    .form-group { margin-bottom: 18px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+    .form-label { display: block; font-size: 14px; font-weight: 600; color: #38251b; margin-bottom: 6px; }
+    .form-input, .form-select { width: 100%; padding: 12px 14px; border: 1px solid #d8c5a2; border-radius: 10px; font-size: 14px; font-family: "Inter", sans-serif; box-sizing: border-box; background: #fff; }
+    .form-input:focus, .form-select:focus { outline: none; border-color: #8d6423; }
+    .btn-submit { width: 100%; padding: 15px; background: #38251b; color: #fff; border: none; border-radius: 10px; font-size: 16px; font-weight: 700; cursor: pointer; transition: 0.2s; margin-top: 10px; }
+    .btn-submit:hover:not(:disabled) { background: #24160f; }
+    .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; }
+    .back-link { display: inline-flex; align-items: center; gap: 6px; color: #8d6423; text-decoration: none; font-weight: 600; font-size: 14px; margin-bottom: 20px; }
+    .brand-top { font-family: "Cormorant Garamond", serif; font-size: 20px; font-weight: 700; color: #38251b; text-decoration: none; letter-spacing: 1px; }
+    .top-bar { display: flex; justify-content: space-between; align-items: center; max-width: 650px; margin: 0 auto 20px; padding: 0 10px; box-sizing: border-box; width: 100%; }
+    .toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(20px); background: #38251b; color: #fff; padding: 12px 24px; border-radius: 10px; opacity: 0; pointer-events: none; transition: 0.3s; font-size: 14px; z-index: 1000; }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+    @media (max-width: 500px) { .form-row { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <div class="checkout-page">
+    <div class="top-bar">
+      <a href="index.html" class="back-link">← Home</a>
+      <a href="index.html" class="brand-top">HAVYODAY</a>
+    </div>
+    <div class="checkout-container">
+      <h1 class="checkout-title">Checkout</h1>
+      <p class="checkout-subtitle">Complete your shipping details to place your order.</p>
+      
+      <div class="checkout-items-section">
+        <div class="checkout-items-heading">Order Items List</div>
+        <div id="checkout-items-list"></div>
+        <div class="checkout-total-row">
+          <span>Total Amount:</span>
+          <span id="summary-total">₹0</span>
+        </div>
+      </div>
+
+      <form id="checkout-form">
+        <div class="form-group">
+          <label class="form-label">Customer Full Name *</label>
+          <input type="text" id="cust-name" class="form-input" placeholder="Aapka pura naam" required>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Mobile Number *</label>
+            <input type="tel" id="cust-mobile" class="form-input" placeholder="10-digit mobile" pattern="[0-9]{10}" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">WhatsApp Number</label>
+            <input type="tel" id="cust-whatsapp" class="form-input" placeholder="Optional">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Delivery Address *</label>
+          <input type="text" id="cust-address" class="form-input" placeholder="House no, Street, Area" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Landmark</label>
+          <input type="text" id="cust-landmark" class="form-input" placeholder="Nearby landmark">
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">City *</label>
+            <input type="text" id="cust-city" class="form-input" placeholder="City" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">State *</label>
+            <input type="text" id="cust-state" class="form-input" placeholder="State" required>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Pincode *</label>
+            <input type="text" id="cust-pincode" class="form-input" placeholder="Pincode" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Payment Method *</label>
+            <select id="cust-payment" class="form-select">
+              <option value="UPI">UPI</option>
+              <option value="COD">Cash on Delivery (COD)</option>
+            </select>
+          </div>
+        </div>
+        <button type="submit" id="place-order-btn" class="btn-submit">Place Order</button>
+      </form>
+    </div>
+  </div>
+
+  <div id="toast" class="toast"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    const SUPABASE_URL = "https://ebzvmhbmoowsmmffvgif.supabase.co";
+    const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_B-y3E6yHs2LhpFHmVkmBAQ_cMCiQgzd";
+    const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+    window.supabaseClient = supabaseClient;
+  </script>
+
+  <script>
+    (() => {
+      const CART_KEY = "havyoday_cart";
+      const BUY_NOW_KEY = "havyoday_buy_now";
+
+      function formatPrice(num) {
+        return Number.isFinite(num) ? "₹" + num.toLocaleString("en-IN") : "₹0";
+      }
+
+      function getCheckoutItems() {
+        const params = new URLSearchParams(window.location.search);
+        if (params.get("mode") === "buynow") {
+          try { return JSON.parse(localStorage.getItem(BUY_NOW_KEY)) || []; } catch { return []; }
+        }
+        try { return JSON.parse(localStorage.getItem(CART_KEY)) || []; } catch { return []; }
+      }
+
+      function showToast(msg) {
+        const t = document.getElementById("toast");
+        if (!t) return;
+        t.textContent = msg;
+        t.classList.add("show");
+        setTimeout(() => t.classList.remove("show"), 2500);
+      }
+
+      function renderSummary() {
+        const items = getCheckoutItems();
+        const listEl = document.getElementById("checkout-items-list");
+        const totalEl = document.getElementById("summary-total");
+
+        if (!listEl || !totalEl) return;
+
+        if (items.length === 0) {
+          listEl.innerHTML = `<div style="text-align: center; color: #7c7066; padding: 15px 0;">No items found.</div>`;
+          totalEl.textContent = "₹0";
+          return;
+        }
+
+        let html = "";
+        let totalPrice = 0;
+
+        items.forEach(i => {
+          const qty = Number(i.quantity) || 1;
+          const price = Number(i.price) || 0;
+          const lineTotal = price * qty;
+          totalPrice += lineTotal;
+          const img = i.image_url || "";
+          const name = i.name || "Product";
+
+          html += `
+            <div class="checkout-item-row">
+              <div class="checkout-item-left">
+                ${img ? `<img src="${img}" alt="${name}" class="checkout-item-img" onerror="this.style.display='none'">` : ''}
+                <div>
+                  <div class="checkout-item-name">${name}</div>
+                  <div class="checkout-item-qty">Qty: ${qty} x ${formatPrice(price)}</div>
+                </div>
+              </div>
+              <div class="checkout-item-price">${formatPrice(lineTotal)}</div>
+            </div>
+          `;
+        });
+
+        listEl.innerHTML = html;
+        totalEl.textContent = formatPrice(totalPrice);
+      }
+
+      document.getElementById("checkout-form")?.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const submitBtn = document.getElementById("place-order-btn");
+        
+        const customer_name = document.getElementById("cust-name").value.trim();
+        const mobile = document.getElementById("cust-mobile").value.trim();
+        const whatsapp_number = document.getElementById("cust-whatsapp").value.trim() || mobile;
+        const address = document.getElementById("cust-address").value.trim();
+        const landmark = document.getElementById("cust-landmark").value.trim();
+        const city = document.getElementById("cust-city").value.trim();
+        const state = document.getElementById("cust-state").value.trim();
+        const pincode = document.getElementById("cust-pincode").value.trim();
+        const payment_method = document.getElementById("cust-payment").value;
+
+        const items = getCheckoutItems();
+        if (items.length === 0) {
+          showToast("No items found for checkout!");
+          return;
+        }
+
+        const quantity = items.reduce((acc, i) => acc + (Number(i.quantity) || 0), 0);
+        const total_amount = items.reduce((acc, i) => acc + (Number(i.price) * Number(i.quantity) || 0), 0);
+        const order_id = "ORD-" + Date.now();
+
+        const orderPayload = {
+          order_id,
+          customer_name,
+          mobile,
+          whatsapp_number,
+          address,
+          landmark,
+          city,
+          state,
+          pincode,
+          quantity,
+          payment_method,
+          products: items,
+          total_amount,
+          status: "pending"
+        };
+
+        try {
+          if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.textContent = "Placing Order...";
+          }
+
+          if (window.supabaseClient) {
+            const { error } = await window.supabaseClient.from("orders").insert([orderPayload]);
+            if (error) {
+              console.error("Supabase insert error:", error);
+            }
+          }
+
+          const params = new URLSearchParams(window.location.search);
+          if (params.get("mode") === "buynow") {
+            localStorage.removeItem(BUY_NOW_KEY);
+          } else {
+            localStorage.removeItem(CART_KEY);
+          }
+
+          window.location.assign("order-success.html?order_id=" + encodeURIComponent(order_id));
+        } catch (err) {
+          console.error("Order error:", err);
+          showToast("Error placing order. Please try again.");
+          if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.textContent = "Place Order";
+          }
+        }
+      });
+
+      renderSummary();
+    })();
+  </script>
+</body>
+</html>
+
