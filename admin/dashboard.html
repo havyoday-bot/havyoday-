@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>HAVYODAY Admin Panel</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f6f1e8;
+      color: #2b2118;
+    }
+
+    .header {
+      background: #4b1f12;
+      color: white;
+      padding: 18px;
+      text-align: center;
+    }
+
+    .header h1 {
+      margin: 0;
+      font-size: 25px;
+    }
+
+    .header p {
+      margin: 6px 0 0;
+      font-size: 14px;
+      opacity: 0.9;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 30px auto;
+      padding: 15px;
+    }
+
+    .panel {
+      background: white;
+      border-radius: 14px;
+      padding: 20px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    }
+
+    .panel h2 {
+      margin-top: 0;
+      text-align: center;
+    }
+
+    .menu-btn {
+      width: 100%;
+      border: none;
+      border-radius: 10px;
+      padding: 16px;
+      margin: 9px 0;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      background: #d99a28;
+      color: white;
+    }
+
+    .menu-btn:active {
+      transform: scale(0.98);
+    }
+
+    .logout {
+      background: #8b2d2d;
+    }
+
+    #message {
+      text-align: center;
+      margin-top: 15px;
+      font-size: 14px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="header">
+    <h1>HAVYODAY</h1>
+    <p>Admin Panel</p>
+  </div>
+
+  <div class="container">
+
+    <div class="panel">
+
+      <h2>Dashboard</h2>
+
+      <button class="menu-btn" id="bannerBtn">
+        🖼️ Banner Management
+      </button>
+
+      <button class="menu-btn" id="productsBtn">
+        📦 Products Management
+      </button>
+
+      <button class="menu-btn" id="ordersBtn">
+        🛒 Orders Management
+      </button>
+
+      <button class="menu-btn logout" id="logoutBtn">
+        🚪 Logout
+      </button>
+
+      <div id="message"></div>
+
+    </div>
+
+  </div>
+
+  <script>
+
+    const SUPABASE_URL =
+      "https://ebzvmhbmoowsmmffvgif.supabase.co";
+
+    const SUPABASE_KEY =
+      "sb_publishable_B-y3E6yHs2LhpFHmVkmBAQ_cMCiQgzd";
+
+    const supabaseClient =
+      window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+      );
+
+
+    // Banner Management
+    document.getElementById("bannerBtn").onclick =
+      function() {
+        window.location.href = "index.html";
+      };
+
+
+    // Products Management
+    document.getElementById("productsBtn").onclick =
+      function() {
+        window.location.href = "products.html";
+      };
+
+
+    // Orders Management
+    document.getElementById("ordersBtn").onclick =
+      function() {
+        window.location.href = "orders.html";
+      };
+
+
+    // Logout
+    document.getElementById("logoutBtn").onclick =
+      async function() {
+
+        const message =
+          document.getElementById("message");
+
+        message.textContent = "Logging out...";
+
+        const { error } =
+          await supabaseClient.auth.signOut();
+
+        if (error) {
+          message.textContent =
+            "Logout failed: " + error.message;
+          return;
+        }
+
+        window.location.href = "login.html";
+      };
+
+  </script>
+
+</body>
+</html>
