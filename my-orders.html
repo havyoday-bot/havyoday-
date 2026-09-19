@@ -1,0 +1,1095 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>My Orders | HAVYODAY</title>
+
+  <!-- Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: #f7f3ed;
+      color: #2d2118;
+      min-height: 100vh;
+    }
+
+    header {
+      background: #ffffff;
+      padding: 16px;
+      box-shadow: 0 2px 10px rgba(0,0,0,.08);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .header-inner {
+      max-width: 850px;
+      margin: auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo {
+      font-size: 22px;
+      font-weight: bold;
+      color: #8b4b16;
+    }
+
+    .home-btn {
+      text-decoration: none;
+      background: #8b4b16;
+      color: white;
+      padding: 10px 16px;
+      border-radius: 8px;
+      font-size: 14px;
+    }
+
+    .container {
+      width: 92%;
+      max-width: 700px;
+      margin: 32px auto 50px;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 28px;
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #777;
+      font-size: 14px;
+      margin-bottom: 25px;
+    }
+
+    .box {
+      background: white;
+      border-radius: 15px;
+      padding: 22px;
+      box-shadow: 0 4px 18px rgba(0,0,0,.07);
+    }
+
+    .field {
+      margin-bottom: 16px;
+    }
+
+    label {
+      display: block;
+      font-size: 14px;
+      font-weight: bold;
+      margin-bottom: 7px;
+    }
+
+    input {
+      width: 100%;
+      padding: 13px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 15px;
+      outline: none;
+    }
+
+    input:focus {
+      border-color: #8b4b16;
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    #trackBtn {
+      background: #8b4b16;
+      color: white;
+    }
+
+    #trackBtn:disabled,
+    #refreshBtn:disabled {
+      opacity: .6;
+    }
+
+    .message {
+      text-align: center;
+      margin-top: 15px;
+      font-size: 14px;
+      min-height: 20px;
+    }
+
+    .error {
+      color: #c62828;
+    }
+
+    .success {
+      color: #2e7d32;
+    }
+
+    .loading {
+      display: none;
+      text-align: center;
+      margin-top: 14px;
+      color: #777;
+      font-size: 14px;
+    }
+
+    .order-card {
+      display: none;
+      margin-top: 22px;
+      background: white;
+      border-radius: 15px;
+      padding: 22px;
+      box-shadow: 0 4px 18px rgba(0,0,0,.07);
+    }
+
+    .order-card.show {
+      display: block;
+    }
+
+    .order-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      border-bottom: 1px solid #eee;
+      padding-bottom: 15px;
+      margin-bottom: 12px;
+    }
+
+    .order-top h2 {
+      font-size: 19px;
+    }
+
+    .status {
+      padding: 8px 13px;
+      border-radius: 20px;
+      background: #fff3cd;
+      color: #856404;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    .status.dispatched {
+      background: #dbeafe;
+      color: #1d4ed8;
+    }
+
+    .status.delivered {
+      background: #dcfce7;
+      color: #166534;
+    }
+
+    .status.cancelled {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 15px;
+      padding: 11px 0;
+      border-bottom: 1px solid #f0f0f0;
+      font-size: 14px;
+    }
+
+    .info-label {
+      color: #777;
+    }
+
+    .info-value {
+      text-align: right;
+      font-weight: 600;
+      max-width: 65%;
+      word-break: break-word;
+    }
+
+    .products {
+      background: #faf8f5;
+      border-radius: 10px;
+      padding: 15px;
+      margin-top: 18px;
+    }
+
+    .products h3 {
+      font-size: 16px;
+      margin-bottom: 9px;
+    }
+
+    #productsText {
+      white-space: pre-wrap;
+      word-break: break-word;
+      line-height: 1.5;
+      font-size: 14px;
+    }
+
+    #refreshBtn {
+      margin-top: 18px;
+      background: white;
+      border: 1px solid #8b4b16;
+      color: #8b4b16;
+    }
+
+    .live {
+      text-align: center;
+      color: #777;
+      font-size: 12px;
+      margin-top: 10px;
+    }
+
+    @media(max-width:500px) {
+      .order-top {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .info-row {
+        flex-direction: column;
+        gap: 4px;
+      }
+
+      .info-value {
+        text-align: left;
+        max-width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="logo">HAVYODAY</div>
+
+    <a href="index.html" class="home-btn">
+      Home
+    </a>
+  </div>
+</header>
+
+
+<div class="container">
+
+  <h1>My Orders</h1>
+
+  <p class="subtitle">
+    Track your HAVYODAY order using your Order ID and mobile number.
+  </p>
+
+
+  <!-- SEARCH BOX -->
+  <div class="box">
+
+    <div class="field">
+      <label for="orderId">Order ID</label>
+
+      <input
+        id="orderId"
+        type="text"
+        placeholder="Enter Order ID"
+        autocomplete="off"
+      >
+    </div>
+
+
+    <div class="field">
+      <label for="mobile">Mobile Number</label>
+
+      <input
+        id="mobile"
+        type="tel"
+        inputmode="numeric"
+        placeholder="Enter mobile number"
+        autocomplete="tel"
+      >
+    </div>
+
+
+    <button id="trackBtn">
+      Track Order
+    </button>
+
+
+    <div id="loading" class="loading">
+      Searching your order...
+    </div>
+
+
+    <div id="message" class="message"></div>
+
+  </div>
+
+
+  <!-- ORDER DETAILS -->
+  <div id="orderCard" class="order-card">
+
+    <div class="order-top">
+
+      <h2>Order Details</h2>
+
+      <span id="status" class="status">
+        Pending
+      </span>
+
+    </div>
+
+
+    <div class="info-row">
+      <span class="info-label">Order ID</span>
+      <span id="showOrderId" class="info-value">—</span>
+    </div>
+
+
+    <div class="info-row">
+      <span class="info-label">Order Date</span>
+      <span id="showOrderDate" class="info-value">—</span>
+    </div>
+
+
+    <div class="info-row">
+      <span class="info-label">Customer Name</span>
+      <span id="showCustomer" class="info-value">—</span>
+    </div>
+
+
+    <div class="info-row">
+      <span class="info-label">Mobile</span>
+      <span id="showMobile" class="info-value">—</span>
+    </div>
+
+
+    <div class="info-row">
+      <span class="info-label">Quantity</span>
+      <span id="showQuantity" class="info-value">—</span>
+    </div>
+
+
+    <div class="info-row">
+      <span class="info-label">Payment Method</span>
+      <span id="showPayment" class="info-value">—</span>
+    </div>
+
+
+    <div class="info-row">
+      <span class="info-label">Total Amount</span>
+      <span id="showTotal" class="info-value">—</span>
+    </div>
+
+
+    <div class="products">
+
+      <h3>Products Ordered</h3>
+
+      <div id="productsText">
+        —
+      </div>
+
+    </div>
+
+
+    <button id="refreshBtn">
+      ↻ Refresh Order Status
+    </button>
+
+    <div class="live">
+      Latest status is fetched directly from your order database.
+    </div>
+
+  </div>
+
+</div>
+
+
+<script>
+"use strict";
+
+/* =========================================================
+   HAVYODAY — MY ORDERS
+   SELF-CONTAINED SUPABASE VERSION
+   ========================================================= */
+
+
+/* ---------------------------------------------------------
+   SUPABASE CONFIG
+   --------------------------------------------------------- */
+
+const SUPABASE_URL =
+  "https://ebzvmhbmoowsmmffvgif.supabase.co";
+
+const SUPABASE_KEY =
+  "sb_publishable_B-y3E6yHs2LhpFHmVkmBAQ_cMCiQgzd";
+
+
+/* ---------------------------------------------------------
+   CREATE SUPABASE CLIENT
+   --------------------------------------------------------- */
+
+let supabaseClient = null;
+
+try {
+
+  if (
+    window.supabase &&
+    typeof window.supabase.createClient === "function"
+  ) {
+
+    supabaseClient =
+      window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+      );
+
+  } else {
+
+    throw new Error(
+      "Supabase library could not be loaded."
+    );
+
+  }
+
+} catch (error) {
+
+  console.error(
+    "Supabase initialization error:",
+    error
+  );
+
+}
+
+
+/* ---------------------------------------------------------
+   ELEMENTS
+   --------------------------------------------------------- */
+
+const orderIdInput =
+  document.getElementById("orderId");
+
+const mobileInput =
+  document.getElementById("mobile");
+
+const trackBtn =
+  document.getElementById("trackBtn");
+
+const refreshBtn =
+  document.getElementById("refreshBtn");
+
+const loading =
+  document.getElementById("loading");
+
+const message =
+  document.getElementById("message");
+
+const orderCard =
+  document.getElementById("orderCard");
+
+
+/* ---------------------------------------------------------
+   CURRENT ORDER
+   --------------------------------------------------------- */
+
+let currentOrderId = "";
+let currentMobile = "";
+
+let realtimeChannel = null;
+
+
+/* ---------------------------------------------------------
+   MESSAGE
+   --------------------------------------------------------- */
+
+function showMessage(text, type = "error") {
+
+  message.textContent = text;
+
+  message.className =
+    "message " + type;
+}
+
+
+/* ---------------------------------------------------------
+   LOADING
+   --------------------------------------------------------- */
+
+function setLoading(value) {
+
+  loading.style.display =
+    value ? "block" : "none";
+
+  trackBtn.disabled =
+    value;
+}
+
+
+/* ---------------------------------------------------------
+   FORMAT DATE
+   --------------------------------------------------------- */
+
+function formatDate(value) {
+
+  if (!value) {
+    return "—";
+  }
+
+  const date =
+    new Date(value);
+
+  if (isNaN(date.getTime())) {
+    return String(value);
+  }
+
+  return date.toLocaleString(
+    "en-IN",
+    {
+      dateStyle: "medium",
+      timeStyle: "short"
+    }
+  );
+}
+
+
+/* ---------------------------------------------------------
+   FORMAT MONEY
+   --------------------------------------------------------- */
+
+function formatMoney(value) {
+
+  if (
+    value === null ||
+    value === undefined ||
+    value === ""
+  ) {
+    return "—";
+  }
+
+  const number =
+    Number(value);
+
+  if (isNaN(number)) {
+    return String(value);
+  }
+
+  return "₹" +
+    number.toLocaleString(
+      "en-IN",
+      {
+        maximumFractionDigits: 2
+      }
+    );
+}
+
+
+/* ---------------------------------------------------------
+   STATUS
+   --------------------------------------------------------- */
+
+function updateStatus(value) {
+
+  const statusElement =
+    document.getElementById("status");
+
+  const status =
+    String(value || "Pending").trim();
+
+  const lower =
+    status.toLowerCase();
+
+  statusElement.className =
+    "status";
+
+  if (lower === "dispatched") {
+
+    statusElement.classList.add(
+      "dispatched"
+    );
+
+  }
+
+  else if (
+    lower === "delivered" ||
+    lower === "final"
+  ) {
+
+    statusElement.classList.add(
+      "delivered"
+    );
+
+  }
+
+  else if (lower === "cancelled") {
+
+    statusElement.classList.add(
+      "cancelled"
+    );
+
+  }
+
+  statusElement.textContent =
+    status;
+}
+
+
+/* ---------------------------------------------------------
+   DISPLAY ORDER
+   --------------------------------------------------------- */
+
+function displayOrder(order) {
+
+  document.getElementById(
+    "showOrderId"
+  ).textContent =
+    order.order_id || "—";
+
+
+  document.getElementById(
+    "showOrderDate"
+  ).textContent =
+    formatDate(order.order_date);
+
+
+  document.getElementById(
+    "showCustomer"
+  ).textContent =
+    order.customer_name || "—";
+
+
+  document.getElementById(
+    "showMobile"
+  ).textContent =
+    order.mobile || "—";
+
+
+  document.getElementById(
+    "showQuantity"
+  ).textContent =
+    order.quantity ?? "—";
+
+
+  document.getElementById(
+    "showPayment"
+  ).textContent =
+    order.payment_method || "—";
+
+
+  document.getElementById(
+    "showTotal"
+  ).textContent =
+    formatMoney(order.total_amount);
+
+
+  document.getElementById(
+    "productsText"
+  ).textContent =
+    order.products || "—";
+
+
+  updateStatus(
+    order.status || "Pending"
+  );
+
+
+  orderCard.classList.add(
+    "show"
+  );
+}
+
+
+/* ---------------------------------------------------------
+   FIND ORDER
+   --------------------------------------------------------- */
+
+async function getOrder() {
+
+  if (!supabaseClient) {
+
+    throw new Error(
+      "Supabase connection is not available."
+    );
+  }
+
+
+  if (
+    !currentOrderId ||
+    !currentMobile
+  ) {
+
+    throw new Error(
+      "Please enter Order ID and mobile number."
+    );
+  }
+
+
+  const {
+    data,
+    error
+  } =
+    await supabaseClient
+      .from("orders")
+      .select(`
+        id,
+        customer_name,
+        address,
+        order_id,
+        mobile,
+        city,
+        whatsapp_number,
+        state,
+        pincode,
+        landmark,
+        quantity,
+        order_date,
+        payment_method,
+        products,
+        total_amount,
+        status
+      `)
+      .eq(
+        "order_id",
+        currentOrderId
+      )
+      .eq(
+        "mobile",
+        currentMobile
+      )
+      .limit(1);
+
+
+  if (error) {
+
+    console.error(
+      "Supabase query error:",
+      error
+    );
+
+    throw new Error(
+      error.message ||
+      "Unable to search order."
+    );
+  }
+
+
+  if (
+    !data ||
+    data.length === 0
+  ) {
+
+    throw new Error(
+      "Order not found. Please check your Order ID and mobile number."
+    );
+  }
+
+
+  return data[0];
+}
+
+
+/* ---------------------------------------------------------
+   TRACK ORDER
+   --------------------------------------------------------- */
+
+async function trackOrder() {
+
+  showMessage("");
+
+  orderCard.classList.remove(
+    "show"
+  );
+
+
+  currentOrderId =
+    orderIdInput.value.trim();
+
+  currentMobile =
+    mobileInput.value.trim();
+
+
+  if (!currentOrderId) {
+
+    showMessage(
+      "Please enter your Order ID."
+    );
+
+    orderIdInput.focus();
+
+    return;
+  }
+
+
+  if (!currentMobile) {
+
+    showMessage(
+      "Please enter your mobile number."
+    );
+
+    mobileInput.focus();
+
+    return;
+  }
+
+
+  setLoading(true);
+
+
+  try {
+
+    const order =
+      await getOrder();
+
+
+    displayOrder(order);
+
+
+    showMessage(
+      "Order found successfully.",
+      "success"
+    );
+
+
+    setupRealtime();
+
+  }
+
+  catch (error) {
+
+    console.error(
+      "Track order error:",
+      error
+    );
+
+    showMessage(
+      error.message ||
+      "Something went wrong while finding your order."
+    );
+
+  }
+
+  finally {
+
+    setLoading(false);
+
+  }
+
+}
+
+
+/* ---------------------------------------------------------
+   REFRESH ORDER
+   --------------------------------------------------------- */
+
+async function refreshOrder() {
+
+  if (
+    !currentOrderId ||
+    !currentMobile
+  ) {
+
+    showMessage(
+      "Please track an order first."
+    );
+
+    return;
+  }
+
+
+  refreshBtn.disabled =
+    true;
+
+  refreshBtn.textContent =
+    "Refreshing...";
+
+
+  try {
+
+    const order =
+      await getOrder();
+
+
+    displayOrder(order);
+
+
+    showMessage(
+      "Order status updated.",
+      "success"
+    );
+
+  }
+
+  catch (error) {
+
+    console.error(
+      "Refresh error:",
+      error
+    );
+
+    showMessage(
+      error.message ||
+      "Unable to refresh order."
+    );
+
+  }
+
+  finally {
+
+    refreshBtn.disabled =
+      false;
+
+    refreshBtn.textContent =
+      "↻ Refresh Order Status";
+
+  }
+
+}
+
+
+/* ---------------------------------------------------------
+   REALTIME STATUS
+   --------------------------------------------------------- */
+
+function setupRealtime() {
+
+  if (!supabaseClient) {
+    return;
+  }
+
+
+  try {
+
+    if (realtimeChannel) {
+
+      supabaseClient.removeChannel(
+        realtimeChannel
+      );
+
+    }
+
+
+    realtimeChannel =
+      supabaseClient
+        .channel(
+          "order-status-" +
+          Date.now()
+        )
+        .on(
+          "postgres_changes",
+          {
+            event: "UPDATE",
+            schema: "public",
+            table: "orders"
+          },
+          function(payload) {
+
+            const updated =
+              payload.new;
+
+
+            if (
+              String(updated.order_id || "") ===
+                currentOrderId &&
+              String(updated.mobile || "") ===
+                currentMobile
+            ) {
+
+              displayOrder(
+                updated
+              );
+
+              showMessage(
+                "Order status updated automatically.",
+                "success"
+              );
+
+            }
+
+          }
+        )
+        .subscribe();
+
+  }
+
+  catch (error) {
+
+    console.warn(
+      "Realtime setup failed:",
+      error
+    );
+
+  }
+
+}
+
+
+/* ---------------------------------------------------------
+   BUTTON EVENTS
+   --------------------------------------------------------- */
+
+trackBtn.addEventListener(
+  "click",
+  trackOrder
+);
+
+
+refreshBtn.addEventListener(
+  "click",
+  refreshOrder
+);
+
+
+/* ---------------------------------------------------------
+   ENTER KEY
+   --------------------------------------------------------- */
+
+orderIdInput.addEventListener(
+  "keydown",
+  function(event) {
+
+    if (event.key === "Enter") {
+      trackOrder();
+    }
+
+  }
+);
+
+
+mobileInput.addEventListener(
+  "keydown",
+  function(event) {
+
+    if (event.key === "Enter") {
+      trackOrder();
+    }
+
+  }
+);
+
+
+/* ---------------------------------------------------------
+   INITIAL CHECK
+   --------------------------------------------------------- */
+
+if (!supabaseClient) {
+
+  showMessage(
+    "Supabase could not be loaded. Please check your internet connection."
+  );
+
+}
+
+</script>
+
+</body>
+  </html>
