@@ -1,0 +1,1411 @@
+/* =========================================================
+   HAVYODAY — PREMIUM STYLE.CSS
+   Premium • Clean • Classy • Responsive
+   ========================================================= */
+
+
+/* =========================================================
+   1. ROOT
+   ========================================================= */
+
+:root {
+  --cream: #faf7f0;
+  --cream-dark: #f2eadc;
+
+  --white: #ffffff;
+
+  --brown: #38251b;
+  --brown-dark: #24160f;
+  --brown-light: #5b4030;
+
+  --gold: #b88a38;
+  --gold-dark: #8d6423;
+  --gold-light: #ead7aa;
+
+  --text: #2b211b;
+  --muted: #7c7066;
+
+  --border: rgba(56, 37, 27, 0.12);
+
+  --shadow-soft: 0 10px 30px rgba(45, 30, 20, 0.08);
+  --shadow-card: 0 14px 35px rgba(45, 30, 20, 0.10);
+
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 22px;
+
+  --transition: 0.25s ease;
+}
+
+
+/* =========================================================
+   2. RESET
+   ========================================================= */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: "Inter", sans-serif;
+  background: var(--cream);
+  color: var(--text);
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+
+/* =========================================================
+   3. HEADER
+   ========================================================= */
+
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+
+  width: 100%;
+
+  background: rgba(250, 247, 240, 0.96);
+
+  border-bottom: 1px solid var(--border);
+
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+.header-inner {
+  width: min(1180px, calc(100% - 32px));
+
+  min-height: 76px;
+
+  margin: auto;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 20px;
+}
+
+
+/* =========================================================
+   4. BRAND
+   ========================================================= */
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+
+  gap: 10px;
+
+  flex-shrink: 0;
+}
+
+.brand-symbol {
+  width: 42px;
+  height: 42px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid var(--gold);
+
+  border-radius: 50%;
+
+  color: var(--gold-dark);
+
+  font-family: "Cormorant Garamond", serif;
+  font-size: 27px;
+  font-weight: 700;
+
+  background:
+    radial-gradient(
+      circle,
+      #fffdf8 0%,
+      #f6edda 100%
+    );
+
+  box-shadow:
+    0 5px 15px rgba(184, 138, 56, 0.15);
+}
+
+.brand-name {
+  color: var(--brown-dark);
+
+  font-family: "Cormorant Garamond", serif;
+  font-size: 26px;
+  font-weight: 700;
+
+  letter-spacing: 2px;
+}
+
+
+/* =========================================================
+   5. MAIN NAVIGATION
+   ========================================================= */
+
+.main-nav {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+
+  margin-left: auto;
+}
+
+.main-nav a {
+  position: relative;
+
+  color: var(--brown-light);
+
+  font-size: 14px;
+  font-weight: 600;
+
+  transition: color var(--transition);
+}
+
+.main-nav a::after {
+  content: "";
+
+  position: absolute;
+
+  left: 0;
+  bottom: -7px;
+
+  width: 0;
+  height: 2px;
+
+  background: var(--gold);
+
+  transition: width var(--transition);
+}
+
+.main-nav a:hover {
+  color: var(--gold-dark);
+}
+
+.main-nav a:hover::after {
+  width: 100%;
+}
+
+
+/* =========================================================
+   6. HEADER ACTIONS
+   ========================================================= */
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+
+/* =========================================================
+   7. CART
+   ========================================================= */
+
+.header-cart {
+  min-height: 42px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 7px;
+
+  padding: 8px 13px;
+
+  border: 1px solid var(--gold-light);
+
+  border-radius: 12px;
+
+  background: rgba(255, 255, 255, 0.75);
+
+  color: var(--brown);
+
+  font-size: 13px;
+  font-weight: 700;
+
+  transition:
+    transform var(--transition),
+    border-color var(--transition),
+    box-shadow var(--transition);
+}
+
+.header-cart:hover {
+  transform: translateY(-2px);
+
+  border-color: var(--gold);
+
+  box-shadow: 0 8px 20px rgba(184, 138, 56, 0.14);
+}
+
+.cart-icon {
+  font-size: 17px;
+}
+
+.cart-count {
+  min-width: 21px;
+  height: 21px;
+
+  padding: 0 5px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: var(--gold);
+  color: var(--white);
+
+  font-size: 11px;
+  font-weight: 700;
+}
+
+
+/* =========================================================
+   8. HAMBURGER MENU BUTTON
+   Three dots replaced visually with three lines
+   ========================================================= */
+
+.menu-button {
+  width: 44px;
+  height: 44px;
+
+  padding: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid var(--gold-light);
+
+  border-radius: 13px;
+
+  background:
+    linear-gradient(
+      145deg,
+      #fffdf8,
+      #f4ead8
+    );
+
+  color: transparent;
+
+  font-size: 0;
+
+  position: relative;
+
+  box-shadow:
+    0 5px 16px rgba(56, 37, 27, 0.08);
+
+  transition:
+    transform var(--transition),
+    box-shadow var(--transition),
+    border-color var(--transition);
+}
+
+
+/* Three horizontal lines */
+
+.menu-button::before,
+.menu-button::after {
+  content: "";
+
+  position: absolute;
+
+  width: 19px;
+  height: 2px;
+
+  border-radius: 10px;
+
+  background: var(--brown);
+}
+
+.menu-button::before {
+  transform: translateY(-6px);
+
+  box-shadow:
+    0 6px 0 var(--brown),
+    0 12px 0 var(--brown);
+}
+
+.menu-button:hover {
+  transform: translateY(-2px);
+
+  border-color: var(--gold);
+
+  box-shadow:
+    0 9px 22px rgba(184, 138, 56, 0.18);
+}
+
+.menu-button:active {
+  transform: scale(0.96);
+}
+
+
+/* =========================================================
+   9. MOBILE MENU
+   ========================================================= */
+
+.mobile-menu {
+  position: absolute;
+
+  top: calc(100% + 10px);
+  right: max(16px, calc((100vw - 1180px) / 2));
+
+  width: 250px;
+
+  padding: 16px;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 10px;
+
+  background:
+    linear-gradient(
+      145deg,
+      #fffdf9,
+      #f6eddd
+    );
+
+  border: 1px solid var(--gold-light);
+
+  border-radius: 20px;
+
+  box-shadow:
+    0 20px 50px rgba(45, 30, 20, 0.17);
+
+  animation: menuOpen 0.22s ease both;
+
+  z-index: 1100;
+}
+
+.mobile-menu[hidden] {
+  display: none;
+}
+
+@keyframes menuOpen {
+  from {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.97);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+
+/* Menu heading */
+
+.mobile-menu::before {
+  content: "HAVYODAY MENU";
+
+  display: block;
+
+  padding: 2px 6px 8px;
+
+  color: var(--gold-dark);
+
+  font-family: "Cormorant Garamond", serif;
+
+  font-size: 17px;
+  font-weight: 700;
+
+  letter-spacing: 1.5px;
+
+  border-bottom: 1px solid var(--gold-light);
+}
+
+
+/* Menu buttons */
+
+.mobile-menu a {
+  min-height: 46px;
+
+  display: flex;
+  align-items: center;
+
+  padding: 11px 14px;
+
+  border: 1px solid rgba(184, 138, 56, 0.18);
+
+  border-radius: 12px;
+
+  background: var(--white);
+
+  color: var(--brown);
+
+  font-size: 14px;
+  font-weight: 700;
+
+  box-shadow:
+    0 4px 12px rgba(56, 37, 27, 0.05);
+
+  transition:
+    transform var(--transition),
+    background var(--transition),
+    color var(--transition),
+    border-color var(--transition),
+    box-shadow var(--transition);
+}
+
+.mobile-menu a:hover {
+  transform: translateX(3px);
+
+  background:
+    linear-gradient(
+      135deg,
+      #f5e7c9,
+      #fffaf1
+    );
+
+  color: var(--gold-dark);
+
+  border-color: var(--gold);
+
+  box-shadow:
+    0 8px 18px rgba(184, 138, 56, 0.13);
+}
+
+
+/* =========================================================
+   10. HERO / BANNER
+   ========================================================= */
+.hero-section {
+  width: 100%;
+
+  padding: 22px 16px 10px;
+}
+
+.banner-container {
+  width: min(1180px, 100%);
+
+  min-height: 230px;
+
+  margin: auto;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  overflow: hidden;
+
+  border-radius: var(--radius-lg);
+
+  border: 1px solid var(--gold-light);
+
+  background:
+    linear-gradient(
+      135deg,
+      #f4ead8,
+      #fffdf8
+    );
+
+  box-shadow: var(--shadow-soft);
+}
+
+.banner-container img {
+  width: 100%;
+  height: auto;
+
+  display: block;
+
+  object-fit: cover;
+}
+
+.banner-loading {
+  color: var(--muted);
+
+  font-size: 14px;
+}
+
+
+/* =========================================================
+   11. SHOP SECTION
+   ========================================================= */
+
+.shop-section {
+  width: min(1180px, calc(100% - 32px));
+
+  margin: auto;
+
+  padding: 55px 0 70px;
+}
+
+.shop-heading {
+  text-align: center;
+
+  max-width: 700px;
+
+  margin: 0 auto 38px;
+}
+
+.section-label {
+  margin-bottom: 8px;
+
+  color: var(--gold-dark);
+
+  font-size: 12px;
+  font-weight: 700;
+
+  letter-spacing: 2px;
+}
+
+.shop-heading h1 {
+  margin-bottom: 10px;
+
+  color: var(--brown-dark);
+
+  font-family: "Cormorant Garamond", serif;
+
+  font-size: clamp(32px, 5vw, 48px);
+
+  line-height: 1.05;
+}
+
+.section-description {
+  color: var(--muted);
+
+  font-size: 14px;
+
+  max-width: 620px;
+
+  margin: auto;
+}
+
+
+/* =========================================================
+   12. PRODUCTS GRID
+   ========================================================= */
+
+.products-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+
+  gap: 24px;
+}
+
+.products-loading {
+  grid-column: 1 / -1;
+
+  padding: 40px;
+
+  text-align: center;
+
+  color: var(--muted);
+}
+
+
+/* =========================================================
+   13. PRODUCT CARD
+   ========================================================= */
+
+.product-card {
+  position: relative;
+
+  overflow: hidden;
+
+  background: var(--white);
+
+  border: 1px solid var(--border);
+
+  border-radius: var(--radius-lg);
+
+  box-shadow: var(--shadow-card);
+
+  transition:
+    transform var(--transition),
+    box-shadow var(--transition),
+    border-color var(--transition);
+}
+
+.product-card:hover {
+  transform: translateY(-5px);
+
+  border-color: var(--gold-light);
+
+  box-shadow:
+    0 20px 45px rgba(45, 30, 20, 0.14);
+}
+
+.product-card img {
+  width: 100%;
+
+  aspect-ratio: 1 / 1;
+
+  object-fit: cover;
+
+  display: block;
+
+  background: var(--cream-dark);
+}
+
+
+/* =========================================================
+   14. PRODUCT INFO
+   ========================================================= */
+
+.product-info {
+  padding: 18px;
+}
+
+.product-info h2,
+.product-info h3 {
+  margin-bottom: 7px;
+
+  color: var(--brown-dark);
+
+  font-family: "Cormorant Garamond", serif;
+
+  font-size: 24px;
+
+  line-height: 1.15;
+}
+
+.product-description {
+  margin-bottom: 12px;
+
+  color: var(--muted);
+
+  font-size: 13px;
+
+  line-height: 1.6;
+}
+
+
+/* =========================================================
+   15. PRODUCT PRICE
+   ========================================================= */
+
+.product-price {
+  margin-bottom: 10px;
+
+  color: var(--gold-dark);
+
+  font-size: 19px;
+  font-weight: 800;
+}
+
+.original-price {
+  margin-left: 7px;
+
+  color: #9b9188;
+
+  font-size: 13px;
+
+  text-decoration: line-through;
+}
+
+
+/* =========================================================
+   16. STOCK
+   ========================================================= */
+
+.product-stock {
+  margin-bottom: 15px;
+
+  color: var(--muted);
+
+  font-size: 12px;
+  font-weight: 600;
+}
+
+
+/* =========================================================
+   17. PRODUCT BUTTONS
+   ========================================================= */
+.product-actions {
+  display: grid;
+
+  grid-template-columns: repeat(3, 1fr);
+
+  gap: 8px;
+
+  margin-top: 14px;
+}
+
+.product-actions a,
+.product-actions button {
+  min-height: 42px;
+
+  padding: 9px 8px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 11px;
+
+  font-size: 11px;
+  font-weight: 700;
+
+  letter-spacing: 0.1px;
+
+  transition:
+    transform var(--transition),
+    box-shadow var(--transition),
+    background var(--transition),
+    border-color var(--transition);
+}
+
+
+/* View Product */
+
+.view-product {
+  border: 1px solid var(--gold-light);
+
+  background: #fffaf1;
+
+  color: var(--brown);
+}
+
+.view-product:hover {
+  transform: translateY(-2px);
+
+  border-color: var(--gold);
+
+  background: #f5e8cd;
+
+  box-shadow:
+    0 7px 16px rgba(184, 138, 56, 0.14);
+}
+
+
+/* Add to Cart */
+
+.add-to-cart {
+  border: 1px solid var(--brown);
+
+  background: var(--brown);
+
+  color: var(--white);
+}
+
+.add-to-cart:hover {
+  transform: translateY(-2px);
+
+  background: var(--brown-dark);
+
+  box-shadow:
+    0 8px 18px rgba(36, 22, 15, 0.18);
+}
+
+
+/* Buy Now */
+
+.buy-now {
+  border: 1px solid var(--gold);
+
+  background:
+    linear-gradient(
+      135deg,
+      var(--gold),
+      var(--gold-dark)
+    );
+
+  color: var(--white);
+
+  box-shadow:
+    0 5px 14px rgba(184, 138, 56, 0.18);
+}
+
+.buy-now:hover {
+  transform: translateY(-2px);
+
+  box-shadow:
+    0 9px 20px rgba(184, 138, 56, 0.28);
+}
+
+
+/* =========================================================
+   18. FOOTER
+   ========================================================= */
+
+.site-footer {
+  margin-top: 20px;
+
+  padding: 55px 16px 25px;
+
+  background:
+    linear-gradient(
+      145deg,
+      #2b1b12,
+      #3c281c
+    );
+
+  color: #f9f1e5;
+
+  border-top: 1px solid rgba(184, 138, 56, 0.35);
+}
+
+.footer-inner {
+  width: min(1180px, 100%);
+
+  margin: auto;
+
+  display: grid;
+
+  grid-template-columns:
+    1.1fr
+    1.3fr
+    1fr;
+
+  gap: 35px;
+}
+
+
+/* =========================================================
+   19. FOOTER BRAND
+   ========================================================= */
+
+.footer-brand {
+  padding-right: 20px;
+}
+
+.footer-logo {
+  display: flex;
+  align-items: center;
+
+  gap: 10px;
+
+  margin-bottom: 10px;
+}
+
+.footer-om {
+  width: 39px;
+  height: 39px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid var(--gold);
+
+  border-radius: 50%;
+
+  color: var(--gold-light);
+
+  font-family: "Cormorant Garamond", serif;
+
+  font-size: 24px;
+}
+
+.footer-logo strong {
+  color: #fff9ef;
+
+  font-family: "Cormorant Garamond", serif;
+
+  font-size: 25px;
+
+  letter-spacing: 2px;
+}
+
+.footer-brand p {
+  color: #cdbfaf;
+
+  font-size: 13px;
+}
+
+
+/* =========================================================
+   20. FOOTER HEADINGS
+   ========================================================= */
+
+.footer-heading {
+  margin-bottom: 15px;
+
+  color: var(--gold-light);
+
+  font-family: "Cormorant Garamond", serif;
+
+  font-size: 21px;
+
+  font-weight: 700;
+
+  letter-spacing: 0.8px;
+}
+
+
+/* =========================================================
+   21. FOOTER SOCIAL
+   ========================================================= */
+
+.footer-social-list {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 9px;
+}
+
+.footer-social-row {
+  min-height: 39px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 15px;
+
+  padding: 7px 11px;
+
+  border: 1px solid rgba(234, 215, 170, 0.15);
+
+  border-radius: 10px;
+
+  background: rgba(255, 255, 255, 0.035);
+
+  transition:
+    background var(--transition),
+    border-color var(--transition),
+    transform var(--transition);
+}
+
+.footer-social-row:hover {
+  transform: translateX(2px);
+
+  border-color: rgba(234, 215, 170, 0.35);
+
+  background: rgba(255, 255, 255, 0.07);
+}
+
+.footer-social-name {
+  color: #e6d9c9;
+
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.footer-social-row a {
+  color: var(--gold-light);
+
+  font-size: 12px;
+  font-weight: 600;
+
+  text-align: right;
+
+  word-break: break-word;
+}
+
+.footer-social-row a:hover {
+  color: #fff9ed;
+}
+
+
+/* =========================================================
+   22. FOOTER FOUNDER
+   ========================================================= */
+.footer-founder {
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-end;
+
+  text-align: right;
+}
+
+.footer-founder p {
+  color: #cdbfaf;
+
+  font-size: 13px;
+}
+
+.footer-founder strong {
+  display: block;
+
+  margin-top: 4px;
+
+  color: #fff7ea;
+
+  font-family: "Cormorant Garamond", serif;
+
+  font-size: 21px;
+}
+
+
+/* =========================================================
+   23. FOOTER BOTTOM
+   ========================================================= */
+
+.footer-bottom {
+  grid-column: 1 / -1;
+
+  margin-top: 15px;
+
+  padding-top: 20px;
+
+  border-top: 1px solid rgba(234, 215, 170, 0.14);
+
+  text-align: center;
+}
+
+.footer-bottom p {
+  color: #a99b8c;
+
+  font-size: 11px;
+
+  letter-spacing: 0.3px;
+}
+
+
+/* =========================================================
+   24. FORM ELEMENTS
+   ========================================================= */
+
+input,
+textarea,
+select {
+  width: 100%;
+
+  padding: 12px 14px;
+
+  border: 1px solid var(--border);
+
+  border-radius: 11px;
+
+  outline: none;
+
+  background: var(--white);
+
+  color: var(--text);
+
+  font-size: 14px;
+
+  transition:
+    border-color var(--transition),
+    box-shadow var(--transition);
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  border-color: var(--gold);
+
+  box-shadow:
+    0 0 0 3px rgba(184, 138, 56, 0.10);
+}
+
+textarea {
+  min-height: 120px;
+
+  resize: vertical;
+}
+
+
+/* =========================================================
+   25. GENERAL BUTTON
+   ========================================================= */
+
+button {
+  outline: none;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: 2px solid var(--gold);
+
+  outline-offset: 3px;
+}
+
+
+/* =========================================================
+   26. IMAGES
+   ========================================================= */
+
+img {
+  max-width: 100%;
+}
+
+
+/* =========================================================
+   27. MOBILE — 600px
+   ========================================================= */
+
+@media (max-width: 600px) {
+
+  .header-inner {
+    width: calc(100% - 22px);
+
+    min-height: 66px;
+
+    gap: 8px;
+  }
+
+  .brand {
+    gap: 7px;
+  }
+
+  .brand-symbol {
+    width: 37px;
+    height: 37px;
+
+    font-size: 23px;
+  }
+
+  .brand-name {
+    font-size: 21px;
+
+    letter-spacing: 1.5px;
+  }
+
+  .main-nav {
+    display: none;
+  }
+
+  .header-actions {
+    gap: 6px;
+  }
+
+  .header-cart {
+    min-height: 40px;
+
+    padding: 7px 9px;
+  }
+
+  .cart-text {
+    display: none;
+  }
+
+  .menu-button {
+    width: 40px;
+    height: 40px;
+  }
+
+  .mobile-menu {
+    right: 11px;
+
+    width: calc(100vw - 22px);
+
+    max-width: 330px;
+  }
+
+
+  /* Hero */
+
+  .hero-section {
+    padding: 12px 11px 5px;
+  }
+
+  .banner-container {
+    min-height: 170px;
+
+    border-radius: 17px;
+  }
+
+
+  /* Shop */
+
+  .shop-section {
+    width: calc(100% - 22px);
+
+    padding: 42px 0 50px;
+  }
+
+  .shop-heading {
+    margin-bottom: 27px;
+  }
+
+  .shop-heading h1 {
+    font-size: 34px;
+  }
+
+  .section-description {
+    font-size: 13px;
+  }
+
+
+  /* Products */
+
+  .products-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+
+    gap: 12px;
+  }
+
+  .product-card {
+    border-radius: 15px;
+  }
+
+  .product-info {
+    padding: 11px;
+  }
+
+  .product-info h2,
+  .product-info h3 {
+    font-size: 20px;
+  }
+
+  .product-description {
+    font-size: 11px;
+  }
+
+  .product-price {
+    font-size: 16px;
+  }
+
+  .product-stock {
+    font-size: 10px;
+
+    margin-bottom: 10px;
+  }
+
+  .product-actions {
+    grid-template-columns: 1fr;
+
+    gap: 6px;
+
+    margin-top: 10px;
+  }
+
+  .product-actions a,
+  .product-actions button {
+    width: 100%;
+
+    min-height: 38px;
+
+    font-size: 10px;
+  }
+
+
+  /* Footer */
+
+  .site-footer {
+    padding: 42px 14px 22px;
+  }
+
+  .footer-inner {
+    grid-template-columns: 1fr;
+
+    gap: 28px;
+  }
+
+  .footer-brand {
+    padding-right: 0;
+  }
+
+  .footer-founder {
+    justify-content: flex-start;
+
+    text-align: left;
+  }
+
+  .footer-bottom {
+    grid-column: auto;
+  }
+
+}
+
+
+/* =========================================================
+   28. SMALL MOBILE — 380px
+   ========================================================= */
+@
+@media (max-width: 380px) {
+
+  .brand-name {
+    font-size: 19px;
+  }
+
+  .brand-symbol {
+    width: 34px;
+    height: 34px;
+
+    font-size: 21px;
+  }
+
+  .header-cart {
+    padding: 6px 7px;
+  }
+
+  .menu-button {
+    width: 38px;
+    height: 38px;
+  }
+
+  .products-grid {
+    gap: 9px;
+  }
+
+  .product-info {
+    padding: 9px;
+  }
+
+  .product-info h2,
+  .product-info h3 {
+    font-size: 18px;
+  }
+
+  .product-actions a,
+  .product-actions button {
+    min-height: 36px;
+
+    font-size: 9px;
+  }
+
+}
+
+
+/* =========================================================
+   29. REDUCED MOTION
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+}
+
+
+/* =========================================================
+   30. ACCESSIBILITY
+   ========================================================= */
+
+[hidden] {
+  display: none !important;
+}
+
+
+/* =========================================================
+   31. END
+   ========================================================= */
