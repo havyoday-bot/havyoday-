@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Product | HAVYODAY</title>
+  <meta name="description" content="HAVYODAY - Premium Puja Essentials">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+
+  <style>
+    .product-page { min-height: 70vh; padding: 70px 20px 90px; }
+    .product-page-inner { width: 100%; max-width: 1100px; margin: 0 auto; }
+    .product-back { display: inline-flex; align-items: center; gap: 8px; margin-bottom: 28px; color: #8d6423; text-decoration: none; font-weight: 600; font-size: 14px; }
+    .product-back:hover { text-decoration: underline; }
+    .product-detail-card { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 55px; background: #ffffff; border: 1px solid #ead7aa; border-radius: 22px; padding: 30px; box-shadow: 0 18px 50px rgba(56, 37, 27, 0.08); }
+    .product-detail-image-box { width: 100%; min-height: 450px; display: flex; align-items: center; justify-content: center; background: #faf7f0; border-radius: 18px; overflow: hidden; border: 1px solid #ead7aa; }
+    .product-detail-image { width: 100%; height: 450px; object-fit: contain; display: block; }
+    .product-detail-info { display: flex; flex-direction: column; justify-content: center; }
+    .product-detail-label { margin: 0 0 10px; color: #b88a38; font-size: 12px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; }
+    .product-detail-title { margin: 0 0 18px; color: #38251b; font-family: "Cormorant Garamond", serif; font-size: clamp(34px, 5vw, 52px); line-height: 1.05; }
+    .product-detail-price-row { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 20px; }
+    .product-detail-price { color: #8d6423; font-size: 28px; font-weight: 700; }
+    .product-detail-original-price { color: #9a9088; font-size: 17px; text-decoration: line-through; }
+    .product-detail-discount { padding: 5px 9px; border-radius: 6px; background: #ead7aa; color: #38251b; font-size: 12px; font-weight: 700; }
+    .product-detail-stock { margin: 0 0 20px; color: #5f544b; font-size: 14px; font-weight: 600; }
+    .product-detail-description { margin: 0 0 28px; color: #6f655d; font-size: 15px; line-height: 1.8; }
+    .quantity-title { margin: 0 0 10px; color: #38251b; font-size: 14px; font-weight: 700; }
+    .quantity-control { width: fit-content; display: flex; align-items: center; border: 1px solid #d8c5a2; border-radius: 10px; overflow: hidden; margin-bottom: 25px; background: #fff; }
+    .quantity-button { width: 46px; height: 46px; border: 0; background: #faf7f0; color: #38251b; font-size: 22px; font-weight: 600; cursor: pointer; transition: 0.2s ease; }
+    .quantity-button:hover:not(:disabled) { background: #ead7aa; }
+    .quantity-button:disabled { opacity: 0.4; cursor: not-allowed; }
+    .quantity-value { min-width: 55px; text-align: center; color: #38251b; font-size: 17px; font-weight: 700; }
+    .product-detail-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+    .product-detail-actions button { min-height: 48px; padding: 0 22px; border-radius: 9px; font-family: "Inter", sans-serif; font-size: 14px; font-weight: 700; cursor: pointer; transition: 0.2s ease; }
+    .product-add-cart { border: 1px solid #b88a38; background: #ffffff; color: #8d6423; }
+    .product-add-cart:hover:not(:disabled) { background: #faf7f0; }
+    .product-buy-now { border: 1px solid #38251b; background: #38251b; color: #ffffff; }
+    .product-buy-now:hover:not(:disabled) { background: #24160f; }
+    .product-detail-actions button:disabled { opacity: 0.45; cursor: not-allowed; }
+    .product-loading, .product-error { min-height: 300px; display: flex; align-items: center; justify-content: center; text-align: center; color: #7c7066; font-size: 16px; }
+    .product-error { flex-direction: column; gap: 15px; }
+    .product-error a { color: #8d6423; font-weight: 700; text-decoration: none; }
+    .product-toast { position: fixed; left: 50%; bottom: 25px; z-index: 9999; transform: translateX(-50%) translateY(20px); min-width: 220px; max-width: calc(100% - 40px); padding: 13px 18px; border-radius: 10px; background: #38251b; color: #ffffff; text-align: center; font-size: 14px; font-weight: 600; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2); opacity: 0; pointer-events: none; transition: 0.25s ease; }
+    .product-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+    .mobile-menu[hidden] { display: none !important; }
+
+    @media (max-width: 800px) {
+      .product-page { padding: 45px 15px 65px; }
+      .product-detail-card { grid-template-columns: 1fr; gap: 30px; padding: 20px; }
+      .product-detail-image-box { min-height: 350px; }
+      .product-detail-image { height: 350px; }
+    }
+    @media (max-width: 480px) {
+      .product-detail-card { border-radius: 16px; padding: 14px; }
+      .product-detail-image-box { min-height: 290px; border-radius: 13px; }
+      .product-detail-image { height: 290px; }
+      .product-detail-title { font-size: 38px; }
+      .product-detail-actions { flex-direction: column; }
+      .product-detail-actions button { width: 100%; }
+    }
+  </style>
+</head>
+
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="index.html" class="brand">
+        <span class="brand-symbol">ॐ</span>
+        <span class="brand-name">HAVYODAY</span>
+      </a>
+      <nav class="main-nav">
+        <a href="index.html">Home</a>
+        <a href="index.html#shop">Shop</a>
+      </nav>
+      <div class="header-actions">
+        <a href="cart.html" class="header-cart" aria-label="Shopping Cart">
+          <span class="cart-icon">🛒</span>
+          <span class="cart-text">Cart</span>
+          <span id="cart-count" class="cart-count">0</span>
+        </a>
+        <button type="button" id="menu-button" class="menu-button" aria-label="Open Menu" aria-expanded="false">☰</button>
+      </div>
+    </div>
+    <div id="mobile-menu" class="mobile-menu" hidden>
+      <a href="index.html">Home</a>
+      <a href="index.html#shop">Shop</a>
+      <a href="cart.html">Cart</a>
+      <a href="my-orders.html">My Orders</a>
+    </div>
+  </header>
+
+  <main class="product-page">
+    <div class="product-page-inner">
+      <a href="index.html#shop" class="product-back">← Back to Shop</a>
+      <div id="product-container">
+        <div id="product-loading" class="product-loading">Loading product...</div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <div class="footer-logo"><span class="footer-om">ॐ</span><strong>HAVYODAY</strong></div>
+        <p>Premium Puja Essentials</p>
+      </div>
+      <div class="footer-social-section">
+        <p class="footer-heading">Connect With Us</p>
+        <div class="footer-social-list">
+          <div class="footer-social-row"><span class="footer-social-name">Instagram</span><a href="#" target="_blank" rel="noopener noreferrer">@Havyoday</a></div>
+          <div class="footer-social-row"><span class="footer-social-name">YouTube</span><a href="#" target="_blank" rel="noopener noreferrer">@Havyoday</a></div>
+          <div class="footer-social-row"><span class="footer-social-name">Facebook</span><a href="#" target="_blank" rel="noopener noreferrer">@Havyoday</a></div>
+          <div class="footer-social-row"><span class="footer-social-name">Email</span><a href="mailto:havyoday@gmail.com">havyoday@gmail.com</a></div>
+        </div>
+      </div>
+      <div class="footer-founder"><p>Founder: <strong>Prashant Sharma</strong></p></div>
+      <div class="footer-bottom"><p>© 2026 HAVYODAY. All Rights Reserved.</p></div>
+    </div>
+  </footer>
+
+  <div id="product-toast" class="product-toast" role="status" aria-live="polite"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    const SUPABASE_URL = "https://ebzvmhbmoowsmmffvgif.supabase.co";
+    const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_B-y3E6yHs2LhpFHmVkmBAQ_cMCiQgzd";
+    const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+    window.supabaseClient = supabaseClient;
+  </script>
+
+  <script>
+    (() => {
+      "use strict";
+
+      const PRODUCT_TABLE = "pooja stor";
+      const CART_KEY = "havyoday_cart";
+      const BUY_NOW_KEY = "havyoday_buy_now";
+      let product = null;
+      let quantity = 1;
+
+      function safeText(value) { return value === null || value === undefined ? "" : String(value); }
+      function formatPrice(value) {
+        const num = Number(value);
+        return Number.isFinite(num) ? "₹" + num.toLocaleString("en-IN") : "₹0";
+      }
+
+      let toastTimer = null;
+      function showToast(message) {
+        const toast = document.getElementById("product-toast");
+        if (!toast) return;
+        toast.textContent = safeText(message);
+        toast.classList.add("show");
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => toast.classList.remove("show"), 2500);
+      }
+
+      function getCart() {
+        try { return JSON.parse(localStorage.getItem(CART_KEY)) || []; } catch { return []; }
+      }
+      function saveCart(cart) {
+        localStorage.setItem(CART_KEY, JSON.stringify(cart));
+        updateCartCount();
+        window.dispatchEvent(new Event("storage"));
+      }
+      function updateCartCount() {
+        const el = document.getElementById("cart-count");
+        if (!el) return;
+        const cart = getCart();
+        const total = cart.reduce((acc, i) => acc + (Number(i.quantity) || 0), 0);
+        el.textContent = String(total);
+      }
+
+      function setupMobileMenu() {
+        const button = document.getElementById("menu-button");
+        const menu = document.getElementById("mobile-menu");
+        if (!button || !menu) return;
+        button.addEventListener("click", () => {
+          const isHidden = menu.hasAttribute("hidden");
+          if (isHidden) {
+            menu.removeAttribute("hidden");
+            button.setAttribute("aria-expanded", "true");
+          } else {
+            menu.setAttribute("hidden", "");
+            button.setAttribute("aria-expanded", "false");
+          }
+        });
+      }
+
+      function getProductId() {
+        return new URLSearchParams(window.location.search).get("id");
+      }
+
+      function renderProduct() {
+        const container = document.getElementById("product-container");
+        if (!container || !product) return;
+
+        const name = safeText(product.name || "Product");
+        const price = Number(product.price) || 0;
+        const origPrice = Number(product.original_price) || 0;
+        const discount = safeText(product.discount);
+        const stock = Number(product.stock) || 0;
+        const desc = safeText(product.description || "No description available.");
+        const img = safeText(product.image_url || "");
+
+        container.innerHTML = `
+          <div class="product-detail-card">
+            <div class="product-detail-image-box">
+              <img src="${img}" alt="${name}" class="product-detail-image" onerror="this.style.background='#faf7f0'">
+            </div>
+            <div class="product-detail-info">
+              <span class="product-detail-label">HAVYODAY COLLECTION</span>
+              <h1 class="product-detail-title">${name}</h1>
+              <div class="product-detail-price-row">
+                <span class="product-detail-price">${formatPrice(price)}</span>
+                ${origPrice > price ? `<span class="product-detail-original-price">${formatPrice(origPrice)}</span>` : ''}
+                ${discount ? `<span class="product-detail-discount">${discount}</span>` : ''}
+              </div>
+              <p class="product-detail-stock">${stock > 0 ? `${stock} items available` : 'Out of stock'}</p>
+              <p class="product-detail-description">${desc}</p>
+              <div class="quantity-title">Quantity</div>
+              <div class="quantity-control">
+                <button type="button" class="quantity-button" id="qty-minus" ${quantity <= 1 ? 'disabled' : ''}>−</button>
+                <span class="quantity-value" id="qty-value">${quantity}</span>
+                <button type="button" class="quantity-button" id="qty-plus" ${stock > 0 && quantity >= stock ? 'disabled' : ''}>+</button>
+              </div>
+              <div class="product-detail-actions">
+                <button type="button" class="product-add-cart" id="add-cart-btn" ${stock === 0 ? 'disabled' : ''}>Add to Cart</button>
+                <button type="button" class="product-buy-now" id="buy-now-btn" ${stock === 0 ? 'disabled' : ''}>Buy Now</button>
+              </div>
+            </div>
+          </div>
+        `;
+
+        const minusBtn = document.getElementById("qty-minus");
+        const plusBtn = document.getElementById("qty-plus");
+        const valSpan = document.getElementById("qty-value");
+
+        minusBtn?.addEventListener("click", () => {
+          if (quantity > 1) {
+            quantity--;
+            valSpan.textContent = quantity;
+            minusBtn.disabled = quantity <= 1;
+            plusBtn.disabled = stock > 0 && quantity >= stock;
+          }
+        });
+
+        plusBtn?.addEventListener("click", () => {
+          if (stock === 0 || quantity < stock) {
+            quantity++;
+            valSpan.textContent = quantity;
+            minusBtn.disabled = quantity <= 1;
+            plusBtn.disabled = stock > 0 && quantity >= stock;
+          } else {
+            showToast(`Maximum stock limit (${stock}) reached.`);
+          }
+        });
+
+        // FIXED ADD TO CART LOGIC
+        document.getElementById("add-cart-btn")?.addEventListener("click", () => {
+          const cart = getCart();
+          const idx = cart.findIndex(i => String(i.id) === String(product.id));
+          const existingQty = idx > -1 ? (Number(cart[idx].quantity) || 0) : 0;
+
+          if (existingQty + quantity > stock) {
+            showToast(`Stock limit exceed! Cart me pehle se ${existingQty} hain (Max stock: ${stock}).`);
+            return;
+          }
+
+          if (idx > -1) {
+            cart[idx].quantity = existingQty + quantity;
+          } else {
+            cart.push({
+              id: product.id,
+              name: product.name,
+              price: Number(product.price),
+              image_url: product.image_url,
+              quantity: quantity,
+              stock: stock
+            });
+          }
+          saveCart(cart);
+          showToast("Added to cart!");
+        });
+
+        document.getElementById("buy-now-btn")?.addEventListener("click", () => {
+          const directItem = [{
+            id: product.id,
+            name: product.name,
+            price: Number(product.price),
+            image_url: product.image_url,
+            quantity: quantity,
+            stock: stock
+          }];
+          localStorage.setItem(BUY_NOW_KEY, JSON.stringify(directItem));
+          window.location.assign("checkout.html?mode=buynow");
+        });
+      }
+
+      async function loadProduct() {
+        const container = document.getElementById("product-container");
+        if (!container) return;
+        const productId = getProductId();
+        if (!productId || !window.supabaseClient) {
+          container.innerHTML = `<div class="product-error"><p>Product not found.</p><a href="index.html#shop">Back to Shop</a></div>`;
+          return;
+        }
+
+        try {
+          const { data, error } = await window.supabaseClient
+            .from(PRODUCT_TABLE)
+            .select("id, name, price, description, image_url, stock, original_price, discount, featured")
+            .eq("id", productId)
+            .maybeSingle();
+
+          if (error || !data) {
+            container.innerHTML = `<div class="product-error"><p>Product not found.</p><a href="index.html#shop">Back to Shop</a></div>`;
+            return;
+          }
+          product = data;
+          quantity = 1;
+          renderProduct();
+        } catch (err) {
+          container.innerHTML = `<div class="product-error"><p>Unable to load this product.</p><a href="index.html#shop">Back to Shop</a></div>`;
+        }
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        setupMobileMenu();
+        updateCartCount();
+        loadProduct();
+      });
+    })();
+  </script>
+</body>
+
+</html>
+
