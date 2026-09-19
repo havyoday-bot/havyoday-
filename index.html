@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>HAVYODAY | Premium Puja Essentials</title>
+
+  <meta
+    name="description"
+    content="HAVYODAY - Premium Puja Essentials for every sacred occasion."
+  >
+
+  <!-- Premium Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap"
+    rel="stylesheet"
+  >
+
+  <!-- Main CSS -->
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+  <!-- =====================================================
+       HEADER
+       ===================================================== -->
+
+  <header class="site-header">
+
+    <div class="header-inner">
+
+      <!-- Logo -->
+      <a href="index.html" class="brand">
+        <span class="brand-symbol">ॐ</span>
+        <span class="brand-name">HAVYODAY</span>
+      </a>
+
+      <!-- Navigation -->
+      <nav class="main-nav">
+
+        <a href="index.html">
+          Home
+        </a>
+
+        <a href="#shop">
+          Shop
+        </a>
+
+      </nav>
+
+      <!-- Header Actions -->
+      <div class="header-actions">
+
+        <!-- Cart -->
+        <a
+          href="cart.html"
+          class="header-cart"
+          aria-label="Shopping Cart"
+        >
+
+          <span class="cart-icon">🛒</span>
+
+          <span class="cart-text">
+            Cart
+          </span>
+
+          <span
+            id="cart-count"
+            class="cart-count"
+          >
+            0
+          </span>
+
+        </a>
+
+        <!-- Three Dot -->
+        <button
+          type="button"
+          id="menu-button"
+          class="menu-button"
+          aria-label="Open Menu"
+          aria-expanded="false"
+        >
+          ⋮
+        </button>
+
+      </div>
+
+    </div>
+
+
+    <!-- ===================================================
+         THREE DOT MENU
+         =================================================== -->
+
+    <div
+      id="mobile-menu"
+      class="mobile-menu"
+      hidden
+    >
+
+      <a href="index.html">
+        Home
+      </a>
+
+      <a href="#shop">
+        Shop
+      </a>
+
+      <a href="cart.html">
+        Cart
+      </a>
+
+      <a href="my-orders.html">
+        My Orders
+      </a>
+
+    </div>
+
+  </header>
+
+
+
+  <!-- =====================================================
+       MAIN CONTENT
+       ===================================================== -->
+
+  <main>
+
+
+    <!-- ===================================================
+         ADMIN CONTROLLED BANNER
+         =================================================== -->
+
+    <section
+      id="hero-banner"
+      class="hero-section"
+    >
+
+      <div
+        id="banner-container"
+        class="banner-container"
+      >
+
+        <!--
+          NO DEMO BANNER.
+
+          Banner will come from:
+
+          ADMIN PANEL
+                ↓
+             SUPABASE
+                ↓
+              app.js
+                ↓
+          banner-container
+        -->
+
+        <div
+          id="banner-loading"
+          class="banner-loading"
+        >
+          Loading...
+        </div>
+
+      </div>
+
+    </section>
+
+
+
+    <!-- ===================================================
+         SHOP
+         =================================================== -->
+
+    <section
+      id="shop"
+      class="shop-section"
+    >
+
+      <div class="shop-heading">
+
+        <p class="section-label">
+          HAVYODAY COLLECTION
+        </p>
+
+        <h1>
+          Premium Puja Essentials
+        </h1>
+
+        <p class="section-description">
+          Discover carefully selected essentials for your
+          sacred rituals and spiritual occasions.
+        </p>
+
+      </div>
+
+
+      <!-- =================================================
+           PRODUCT GRID
+           ================================================= -->
+
+      <div
+        id="products-grid"
+        class="products-grid"
+      >
+
+        <!--
+          NO DEMO PRODUCTS.
+
+          Products will be loaded only from:
+
+          Supabase
+              ↓
+          pooja stor
+              ↓
+          app.js
+              ↓
+          products-grid
+        -->
+
+        <div
+          id="products-loading"
+          class="products-loading"
+        >
+          Loading products...
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+
+
+  <!-- =====================================================
+       FOOTER
+       ===================================================== -->
+
+  <footer class="site-footer">
+
+    <div class="footer-inner">
+
+
+      <!-- Footer Brand -->
+
+      <div class="footer-brand">
+
+        <div class="footer-logo">
+          <span class="footer-om">ॐ</span>
+          <strong>HAVYODAY</strong>
+        </div>
+
+        <p>
+          Premium Puja Essentials
+        </p>
+
+      </div>
+
+
+
+      <!-- =================================================
+           SOCIAL LINKS
+           ================================================= -->
+
+      <div class="footer-social-section">
+
+        <p class="footer-heading">
+          Connect With Us
+        </p>
+
+
+        <div class="footer-social-list">
+
+          <!-- Instagram -->
+
+          <div class="footer-social-row">
+
+            <span class="footer-social-name">
+              Instagram
+            </span>
+
+            <a
+              href="#"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              @Havyoday
+            </a>
+
+          </div>
+
+
+          <!-- YouTube -->
+
+          <div class="footer-social-row">
+
+            <span class="footer-social-name">
+              YouTube
+            </span>
+
+            <a
+              href="#"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              @Havyoday
+            </a>
+
+          </div>
+
+
+          <!-- Facebook -->
+
+          <div class="footer-social-row">
+
+            <span class="footer-social-name">
+              Facebook
+            </span>
+
+            <a
+              href="#"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              @Havyoday
+            </a>
+
+          </div>
+
+
+          <!-- Email -->
+
+          <div class="footer-social-row">
+
+            <span class="footer-social-name">
+              Email
+            </span>
+
+            <a
+              href="mailto:havyoday@gmail.com"
+            >
+              havyoday@gmail.com
+            </a>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+
+      <!-- =================================================
+           FOUNDER
+           ================================================= -->
+
+      <div class="footer-founder">
+
+        <p>
+          Founder:
+          <strong>Prashant Sharma</strong>
+        </p>
+
+      </div>
+
+
+
+      <!-- =================================================
+           COPYRIGHT
+           ================================================= -->
+
+      <div class="footer-bottom">
+
+        <p>
+          © 2026 HAVYODAY. All Rights Reserved.
+        </p>
+
+      </div>
+
+    </div>
+
+  </footer>
+
+
+
+  <!-- =====================================================
+       SUPABASE
+       ===================================================== -->
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+
+  <script>
+
+    /*
+    ========================================================
+    HAVYODAY SUPABASE
+    ========================================================
+    */
+
+    const SUPABASE_URL =
+      "https://ebzvmhbmoowsmmffvgif.supabase.co";
+
+    const SUPABASE_PUBLISHABLE_KEY =
+      "sb_publishable_B-y3E6yHs2LhpFHmVkmBAQ_cMCiQgzd";
+
+
+    /*
+    Create Supabase Client
+    */
+
+    const supabaseClient =
+      window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_PUBLISHABLE_KEY
+      );
+
+
+    /*
+    Make available to app.js
+    */
+
+    window.supabaseClient =
+      supabaseClient;
+
+  </script>
+
+
+
+  <!-- =====================================================
+       APP.JS
+       ===================================================== -->
+
+  <script src="app.js"></script>
+
+
+
+  <!-- =====================================================
+       MENU + CART COUNT
+       ===================================================== -->
+
+  <script>
+
+    document.addEventListener(
+      "DOMContentLoaded",
+      function () {
+
+        /* ================================================
+           THREE DOT MENU
+           ================================================ */
+
+        const menuButton =
+          document.getElementById("menu-button");
+
+        const mobileMenu =
+          document.getElementById("mobile-menu");
+
+
+        if (menuButton && mobileMenu) {
+
+          menuButton.addEventListener(
+            "click",
+            function (event) {
+
+              event.stopPropagation();
+
+              const isHidden =
+                mobileMenu.hasAttribute("hidden");
+
+
+              if (isHidden) {
+
+                mobileMenu.removeAttribute(
+                  "hidden"
+                );
+
+                menuButton.setAttribute(
+                  "aria-expanded",
+                  "true"
+                );
+
+              } else {
+
+                mobileMenu.setAttribute(
+                  "hidden",
+                  ""
+                );
+
+                menuButton.setAttribute(
+                  "aria-expanded",
+                  "false"
+                );
+
+              }
+
+            }
+          );
+
+
+          /* Close menu outside */
+
+          document.addEventListener(
+            "click",
+            function (event) {
+
+              if (
+                !mobileMenu.contains(event.target) &&
+                !menuButton.contains(event.target)
+              ) {
+
+                mobileMenu.setAttribute(
+                  "hidden",
+                  ""
+                );
+
+                menuButton.setAttribute(
+                  "aria-expanded",
+                  "false"
+                );
+
+              }
+
+            }
+          );
+
+        }
+
+
+
+        /* ================================================
+           CART COUNT
+           ================================================ */
+
+        function updateCartCount() {
+
+          const cartCount =
+            document.getElementById(
+              "cart-count"
+            );
+
+          if (!cartCount) {
+            return;
+          }
+
+
+          try {
+
+            const cart =
+              JSON.parse(
+                localStorage.getItem(
+                  "havyoday_cart"
+                )
+              ) || [];
+
+
+            let totalQuantity = 0;
+
+
+            cart.forEach(
+              function (item) {
+
+                totalQuantity +=
+                  Number(item.quantity) || 1;
+
+              }
+            );
+
+
+            cartCount.textContent =
+              totalQuantity;
+
+
+          } catch (error) {
+
+            console.error(
+              "HAVYODAY Cart Error:",
+              error
+            );
+
+            cartCount.textContent = "0";
+
+          }
+
+        }
+
+
+        updateCartCount();
+
+
+        window.addEventListener(
+          "storage",
+          updateCartCount
+        );
+
+      }
+    );
+
+  </script>
+
+</body>
+  </html>
