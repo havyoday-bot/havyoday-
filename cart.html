@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cart | HAVYODAY</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: "Inter", sans-serif; background-color: #fdfbf7; color: #38251b; }
+    .site-header { border-bottom: 1px solid #eadfd7; background: #fff; position: sticky; top: 0; z-index: 1000; }
+    .header-inner { max-width: 1180px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; }
+    .brand { text-decoration: none; color: #38251b; font-weight: 700; font-family: "Cormorant Garamond", serif; font-size: 24px; display: flex; align-items: center; gap: 6px; }
+    .brand-om { font-size: 22px; }
+    .desktop-nav a { margin-left: 20px; color: #38251b; text-decoration: none; font-weight: 600; font-size: 14px; }
+    .cart-count { background: #b87333; color: #fff; font-size: 11px; padding: 2px 7px; border-radius: 50%; font-weight: 700; }
+    
+    /* Professional Menu Button */
+    .menu-button { background: #fff; border: 1px solid #ddd0c8; border-radius: 8px; width: 36px; height: 36px; font-size: 16px; color: #38251b; cursor: pointer; display: none; align-items: center; justify-content: center; transition: background 0.2s ease, border-color 0.2s ease; }
+    .menu-button:hover { background: #f8f2ee; border-color: #c4b5ac; }
+    
+    /* Compact Professional Dropdown Menu */
+    .mobile-menu { background: #fff; border: 1px solid #eadfd7; border-radius: 10px; margin: 6px 16px; padding: 6px; box-shadow: 0 10px 25px rgba(56, 37, 27, 0.12); margin-left: auto; max-width: 210px; width: calc(100% - 32px); }
+    .mobile-menu[hidden] { display: none; }
+    .mobile-menu a { display: block; padding: 9px 12px; color: #38251b; text-decoration: none; font-weight: 500; font-size: 13px; border-radius: 6px; transition: background 0.15s ease; }
+    .mobile-menu a:hover { background: #f8f2ee; }
+
+    .cart-page { max-width: 1180px; margin: 0 auto; padding: 20px 16px 40px; }
+    .cart-title { margin: 0 0 16px; font-family: "Cormorant Garamond", serif; font-size: 30px; font-weight: 700; text-align: center; }
+    .cart-layout { display: grid; grid-template-columns: 1fr 340px; gap: 20px; align-items: start; }
+    .cart-items-section, .cart-summary { background: #ffffff; border: 1px solid #eadfd7; border-radius: 14px; box-shadow: 0 4px 15px rgba(56, 37, 27, 0.05); }
+    .cart-items-section { padding: 16px; }
+    .cart-summary { padding: 20px; position: sticky; top: 76px; }
+    
+    .cart-item { display: grid; grid-template-columns: 72px 1fr auto; gap: 12px; align-items: center; padding: 12px 0; border-bottom: 1px solid #eee5df; }
+    .cart-item:first-child { padding-top: 0; }
+    .cart-item:last-child { border-bottom: none; padding-bottom: 0; }
+    .cart-item-image { width: 72px; height: 72px; border-radius: 10px; object-fit: cover; background: #f7f1ed; border: 1px solid #eee3dc; }
+    .cart-item-name { margin: 0 0 4px; font-family: "Cormorant Garamond", serif; font-size: 18px; font-weight: 700; color: #38251b; }
+    .cart-item-price { margin-bottom: 6px; font-size: 13px; font-weight: 700; color: #38251b; }
+    
+    .quantity-control { display: inline-flex; align-items: center; border: 1px solid #ddd0c8; border-radius: 8px; overflow: hidden; background: #fff; }
+    .quantity-button { width: 28px; height: 28px; border: none; background: #f8f2ee; color: #38251b; font-size: 14px; font-weight: 700; cursor: pointer; }
+    .quantity-button:active { transform: scale(0.96); }
+    .quantity-value { min-width: 28px; text-align: center; font-size: 13px; font-weight: 700; }
+    
+    .remove-button { margin-top: 6px; padding: 0; border: none; background: transparent; color: #9b4b3d; font-family: "Inter", sans-serif; font-size: 12px; font-weight: 600; cursor: pointer; }
+    .remove-button:hover { text-decoration: underline; }
+    .item-total { min-width: 65px; text-align: right; font-size: 14px; font-weight: 700; color: #38251b; }
+
+    .summary-title { margin: 0 0 14px; font-family: "Cormorant Garamond", serif; font-size: 22px; font-weight: 700; color: #38251b; }
+    .summary-row { display: flex; justify-content: space-between; gap: 12px; padding: 7px 0; font-size: 13px; color: #555; }
+    .summary-total { display: flex; justify-content: space-between; gap: 12px; margin-top: 6px; padding-top: 10px; border-top: 1px solid #e8ddd6; font-size: 15px; font-weight: 700; color: #38251b; }
+    .checkout-button { width: 100%; min-height: 42px; margin-top: 14px; padding: 0 14px; border: 1px solid #38251b; border-radius: 8px; background: #38251b; color: #ffffff; font-family: "Inter", sans-serif; font-size: 13px; font-weight: 700; cursor: pointer; transition: 0.2s ease; }
+    .checkout-button:hover { opacity: 0.92; }
+
+    .cart-message { padding: 40px 16px; text-align: center; color: #666; font-size: 13px; }
+    .cart-message h3 { margin: 0 0 6px; font-family: "Cormorant Garamond", serif; font-size: 22px; color: #38251b; }
+    .cart-home-button { display: inline-flex; align-items: center; justify-content: center; min-height: 38px; margin-top: 12px; padding: 0 16px; border-radius: 8px; background: #38251b; color: #fff; text-decoration: none; font-size: 12px; font-weight: 700; }
+    
+    .cart-toast { position: fixed; left: 50%; bottom: 20px; z-index: 9999; transform: translateX(-50%) translateY(20px); min-width: 200px; max-width: calc(100% - 32px); padding: 10px 14px; border-radius: 8px; background: #38251b; color: #fff; font-family: "Inter", sans-serif; font-size: 12px; font-weight: 600; text-align: center; opacity: 0; pointer-events: none; transition: 0.25s ease; }
+    .cart-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    .site-footer { padding: 20px 16px; border-top: 1px solid #eadfd7; background: #38251b; color: #fff; font-size: 12px; }
+    .footer-inner { max-width: 1180px; margin: 0 auto; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 14px; }
+    .footer-inner h3 { margin: 0 0 4px; font-family: "Cormorant Garamond", serif; font-size: 18px; }
+    .footer-inner p { margin: 2px 0; color: #d8ccc4; }
+
+    @media (max-width: 800px) {
+      .desktop-nav { display: none; }
+      .menu-button { display: inline-flex; }
+      .cart-layout { grid-template-columns: 1fr; }
+      .cart-summary { position: static; }
+      .cart-item { grid-template-columns: 64px 1fr; gap: 10px; }
+      .cart-item-image { width: 64px; height: 64px; }
+      .item-total { grid-column: 2; text-align: left; margin-top: 2px; font-size: 13px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="index.html" class="brand"><span class="brand-om">ॐ</span> HAVYODAY</a>
+      <nav class="desktop-nav">
+        <a href="index.html">Home</a>
+        <a href="index.html#shop">Shop</a>
+        <a href="cart.html">Cart <span id="cart-count" class="cart-count">0</span></a>
+      </nav>
+      <button type="button" class="menu-button" id="menu-button" aria-label="Open menu">&#9776;</button>
+    </div>
+    <div class="mobile-menu" id="mobile-menu" hidden>
+      <a href="index.html">Home</a>
+      <a href="index.html#shop">Shop</a>
+      <a href="cart.html">Cart</a>
+      <a href="my-orders.html">My Orders</a>
+    </div>
+  </header>
+
+  <main class="cart-page">
+    <h1 class="cart-title">Your Cart</h1>
+    <div id="cart-main"><div class="cart-message">Loading cart...</div></div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div><h3>HAVYODAY</h3><p>हर पूजा का सामान, विश्वास के साथ।</p></div>
+      <div><p>Founder: Prashant Sharma</p><p>Email: support@havyoday.com</p></div>
+    </div>
+  </footer>
+
+  <div id="cart-toast" class="cart-toast"></div>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    (() => {
+      "use strict";
+      const SUPABASE_URL = "https://ebzvmhbmoowsmmffvgif.supabase.co";
+      const SUPABASE_KEY = "sb_publishable_B-y3E6yHs2LhpFHmVkmBAQ_cMCiQgzd";
+      const supabaseClient = window.supabase?.createClient(SUPABASE_URL, SUPABASE_KEY);
+      const CART_KEY = "havyoday_cart";
+      const PRODUCT_TABLE = "pooja stor";
+      let cartItems = [];
+      const productData = new Map();
+
+      function getCart() {
+        try {
+          const saved = localStorage.getItem(CART_KEY);
+          return saved ? JSON.parse(saved) : [];
+        } catch (e) {
+          console.error("Cart error:", e);
+          return [];
+        }
+      }
+
+      function saveCart() {
+        localStorage.setItem(CART_KEY, JSON.stringify(cartItems));
+      }
+
+      function showToast(msg) {
+        const toast = document.getElementById("cart-toast");
+        if (!toast) return;
+        toast.textContent = msg;
+        toast.classList.add("show");
+        setTimeout(() => toast.classList.remove("show"), 2200);
+      }
+
+      function updateCartCount() {
+        const el = document.getElementById("cart-count");
+        if (!el) return;
+        el.textContent = cartItems.reduce((acc, i) => acc + (Number(i.quantity) || 0), 0);
+      }
+
+      function setupMobileMenu() {
+        const button = document.getElementById("menu-button");
+        const menu = document.getElementById("mobile-menu");
+        if (!button || !menu) return;
+        button.addEventListener("click", () => {
+          const isHidden = menu.hasAttribute("hidden");
+          if (isHidden) {
+            menu.removeAttribute("hidden");
+          } else {
+            menu.setAttribute("hidden", "");
+          }
+        });
+      }
+
+      async function loadProducts() {
+        if (!cartItems.length || !supabaseClient) return;
+        const ids = cartItems.map(i => i.id).filter(Boolean);
+        if (!ids.length) return;
+        try {
+          const { data } = await supabaseClient.from(PRODUCT_TABLE).select("*").in("id", ids);
+          (data || []).forEach(p => productData.set(String(p.id), p));
+        } catch (err) {
+          console.warn("Supabase fetch issue, fallback to cart data", err);
+        }
+      }
+
+      function renderEmptyCart() {
+        const container = document.getElementById("cart-main");
+        if (!container) return;
+        container.innerHTML = `
+          <div class="cart-items-section">
+            <div class="cart-message">
+              <h3>Your Cart is Empty</h3>
+              <p>Add some products to continue shopping.</p>
+              <a href="index.html" class="cart-home-button">Continue Shopping</a>
+            </div>
+          </div>
+        `;
+      }
+
+      function renderCart() {
+        cartItems = getCart();
+        updateCartCount();
+        const container = document.getElementById("cart-main");
+        if (!container) return;
+
+        if (!cartItems.length) {
+          renderEmptyCart();
+          return;
+        }
+
+        let subtotal = 0;
+        const itemsHtml = cartItems.map((item, idx) => {
+          const pData = productData.get(String(item.id)) || item;
+          const name = pData.name || item.name || "Product";
+          const price = Number(pData.price || item.price || 0);
+          const qty = Number(item.quantity) || 1;
+          const img = pData.image_url || item.image_url || "";
+          const total = price * qty;
+          subtotal += total;
+
+          return `
+            <div class="cart-item">
+              <img src="${img}" alt="${name}" class="cart-item-image" onerror="this.style.background='#f7f1ed'">
+              <div>
+                <h3 class="cart-item-name">${name}</h3>
+                <div class="cart-item-price">₹${price}</div>
+                <div class="quantity-control">
+                  <button type="button" class="quantity-button qty-minus" data-index="${idx}">−</button>
+                  <span class="quantity-value">${qty}</span>
+                  <button type="button" class="quantity-button qty-plus" data-index="${idx}">+</button>
+                </div>
+                <div><button type="button" class="remove-button remove-item" data-index="${idx}">Remove</button></div>
+              </div>
+              <div class="item-total">₹${total}</div>
+            </div>
+          `;
+        }).join("");
+
+        container.innerHTML = `
+          <div class="cart-layout">
+            <div class="cart-items-section">${itemsHtml}</div>
+            <div class="cart-summary">
+              <h3 class="summary-title">Order Summary</h3>
+              <div class="summary-row"><span>Subtotal</span><span>₹${subtotal}</span></div>
+              <div class="summary-total"><span>Total</span><span>₹${subtotal}</span></div>
+              <button type="button" class="checkout-button" id="checkout-btn">Proceed to Checkout</button>
+            </div>
+          </div>
+        `;
+
+        container.querySelectorAll(".qty-minus").forEach(btn => {
+          btn.addEventListener("click", () => updateQty(Number(btn.dataset.index), -1));
+        });
+        container.querySelectorAll(".qty-plus").forEach(btn => {
+          btn.addEventListener("click", () => updateQty(Number(btn.dataset.index), 1));
+        });
+        container.querySelectorAll(".remove-item").forEach(btn => {
+          btn.addEventListener("click", () => removeIndex(Number(btn.dataset.index)));
+        });
+        const checkoutBtn = document.getElementById("checkout-btn");
+        if (checkoutBtn) {
+          checkoutBtn.addEventListener("click", () => {
+            showToast("Proceeding to checkout...");
+            setTimeout(() => window.location.assign("checkout.html"), 1000);
+          });
+        }
+      }
+
+      function updateQty(idx, delta) {
+        cartItems = getCart();
+        if (!cartItems[idx]) return;
+        
+        const item = cartItems[idx];
+        const pData = productData.get(String(item.id)) || item;
+        const stock = Number(pData.stock ?? item.stock);
+        
+        let newQty = (Number(item.quantity) || 1) + delta;
+        if (newQty < 1) newQty = 1;
+
+        if (!isNaN(stock) && stock > 0 && newQty > stock) {
+          newQty = stock;
+          showToast(`Maximum stock limit (${stock}) reached.`);
+        }
+        
+        cartItems[idx].quantity = newQty;
+        if (!isNaN(stock) && stock > 0) {
+          cartItems[idx].stock = stock;
+        }
+        
+        saveCart();
+        renderCart();
+      }
+
+      function removeIndex(idx) {
+        cartItems = getCart();
+        cartItems.splice(idx, 1);
+        saveCart();
+        renderCart();
+        showToast("Item removed.");
+      }
+
+      document.addEventListener("DOMContentLoaded", async () => {
+        setupMobileMenu();
+        cartItems = getCart();
+        updateCartCount();
+        await loadProducts();
+        renderCart();
+      });
+    })();
+  </script>
+</body>
+  </html>
+
