@@ -1,0 +1,192 @@
+l<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Order Confirmed | HAVYODAY</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  body {
+    background-color: #f7f4ed;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    color: #1a1a1a;
+  }
+  .card {
+    background: #ffffff;
+    width: 100%;
+    max-width: 440px;
+    padding: 32px 28px;
+    box-shadow: 0 12px 35px rgba(0,0,0,0.04);
+    border-radius: 6px;
+    box-sizing: border-box;
+  }
+  
+  .top-nav {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+  }
+  .top-home-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    text-decoration: none;
+    color: #444;
+    font-size: 11.5px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    padding: 6px 14px;
+    border: 1px solid #e5e0d8;
+    border-radius: 30px;
+    background: #fbf9f5;
+    transition: all 0.2s;
+  }
+  .top-home-btn:hover {
+    background: #f0ebe1;
+    color: #111;
+  }
+
+  .large-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 34px;
+    font-weight: 700;
+    letter-spacing: 4px;
+    text-align: center;
+    color: #111;
+    margin: 18px 0 24px 0;
+    text-transform: uppercase;
+    border-bottom: 1px solid #eae5de;
+    padding-bottom: 20px;
+  }
+
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 24px;
+    font-weight: 400;
+    text-align: center;
+    margin: 0 0 8px 0;
+    color: #111;
+  }
+  
+  .subtitle {
+    text-align: center;
+    font-size: 13px;
+    color: #666;
+    line-height: 1.5;
+    margin-bottom: 28px;
+  }
+
+  .order-id-section {
+    background: #fbf9f5;
+    border: 1px solid #f0ebe1;
+    padding: 18px 20px;
+    border-radius: 4px;
+    margin-bottom: 24px;
+    text-align: center;
+  }
+  .order-id-label {
+    font-size: 10.5px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: #777;
+    margin-bottom: 6px;
+    font-weight: 600;
+  }
+  .order-id-value {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: #111;
+    letter-spacing: 0.5px;
+    word-break: break-all;
+  }
+
+  .stylish-note {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    text-align: center;
+    font-size: 14.5px;
+    color: #3b3b3b;
+    line-height: 1.6;
+    background: #fff;
+    padding: 18px;
+    border-left: 2px solid #111;
+    margin-bottom: 28px;
+  }
+
+  .btn-home {
+    display: block;
+    width: 100%;
+    background-color: #111;
+    color: #fff;
+    text-align: center;
+    padding: 15px;
+    text-decoration: none;
+    font-size: 11.5px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-weight: 500;
+    border-radius: 2px;
+    transition: background 0.3s;
+    box-sizing: border-box;
+  }
+  .btn-home:hover {
+    background-color: #333;
+  }
+</style>
+</head>
+<body>
+
+  <div class="card">
+    <div class="top-nav">
+      <a href="#" onclick="goHome(event)" class="top-home-btn">
+        <span>←</span> Home
+      </a>
+    </div>
+
+    <div class="large-logo">Havyoday</div>
+    
+    <h1>Order Received</h1>
+    <div class="subtitle">Your requisition has been acknowledged and is queued for verification.</div>
+    
+    <div class="order-id-section">
+      <div class="order-id-label">Reference Order ID</div>
+      <div class="order-id-value" id="uniqueSupabaseId">Pending ID...</div>
+    </div>
+    
+    <div class="stylish-note">
+      "Thank you for joining Havyoday. Our team will contact you shortly."
+    </div>
+    
+    <a href="#" onclick="goHome(event)" class="btn-home">Return to Home</a>
+  </div>
+
+  <script>
+    function loadUniqueOrderId() {
+      const urlParams = new URLSearchParams(window.location.search);
+      // Sirf real ID / query param / global var uthayega, random fallback hata diya
+      const realId = urlParams.get('order_id') || urlParams.get('id') || window.SUPABASE_ORDER_ID;
+      
+      const el = document.getElementById('uniqueSupabaseId');
+      if (realId) {
+        el.innerText = realId;
+      } else {
+        el.innerText = 'Not Available';
+      }
+    }
+
+    loadUniqueOrderId();
+
+    function goHome(e) {
+      e.preventDefault();
+      window.location.href = '/'; 
+    }
+  </script>
+</body>
+</html>
+
