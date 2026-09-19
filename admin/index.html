@@ -1,0 +1,1151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>HAVYODAY Admin - Banner</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+
+  <style>
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: #f6f2ec;
+      color: #2d2118;
+    }
+
+    header {
+      background: #fff;
+      padding: 18px;
+      box-shadow: 0 2px 10px rgba(0,0,0,.08);
+    }
+
+    .header-inner {
+      max-width: 750px;
+      margin: auto;
+
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-size: 21px;
+      font-weight: bold;
+      color: #8b4b16;
+    }
+
+    .admin-text {
+      color: #777;
+      font-size: 13px;
+    }
+
+    main {
+      width: 92%;
+      max-width: 700px;
+      margin: 30px auto;
+    }
+
+    h1 {
+      font-size: 27px;
+      margin-bottom: 7px;
+    }
+
+    .subtitle {
+      color: #777;
+      font-size: 14px;
+      margin-bottom: 25px;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 15px;
+      padding: 22px;
+      margin-bottom: 20px;
+
+      box-shadow:
+        0 4px 18px rgba(0,0,0,.07);
+    }
+
+    .card h2 {
+      font-size: 19px;
+      margin-bottom: 17px;
+    }
+
+    .current-image {
+      width: 100%;
+      max-height: 320px;
+
+      object-fit: cover;
+
+      border-radius: 10px;
+
+      display: none;
+    }
+
+    .no-image {
+      background: #f5f5f5;
+
+      padding: 35px 15px;
+
+      text-align: center;
+
+      color: #777;
+
+      border-radius: 10px;
+    }
+
+    .current-title {
+      margin-top: 12px;
+
+      font-size: 17px;
+
+      font-weight: bold;
+    }
+
+    .status {
+      display: inline-block;
+
+      margin-top: 9px;
+
+      padding: 6px 12px;
+
+      border-radius: 20px;
+
+      font-size: 12px;
+
+      font-weight: bold;
+
+      background: #eee;
+
+      color: #666;
+    }
+
+    .status.active {
+      background: #dcfce7;
+      color: #166534;
+    }
+
+    label {
+      display: block;
+
+      font-size: 14px;
+
+      font-weight: bold;
+
+      margin-bottom: 7px;
+    }
+
+    input[type="text"],
+    input[type="file"] {
+      width: 100%;
+
+      padding: 12px;
+
+      border: 1px solid #ddd;
+
+      border-radius: 8px;
+
+      font-size: 15px;
+
+      margin-bottom: 17px;
+
+      background: #fff;
+    }
+
+    input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+
+      vertical-align: middle;
+
+      margin-right: 8px;
+    }
+
+    .active-label {
+      display: flex;
+
+      align-items: center;
+
+      margin-bottom: 18px;
+
+      cursor: pointer;
+    }
+
+    button {
+      width: 100%;
+
+      padding: 14px;
+
+      border: none;
+
+      border-radius: 8px;
+
+      background: #8b4b16;
+
+      color: white;
+
+      font-size: 15px;
+
+      font-weight: bold;
+
+      cursor: pointer;
+    }
+
+    button:disabled {
+      opacity: .6;
+
+      cursor: not-allowed;
+    }
+
+    .preview {
+      display: none;
+
+      margin-bottom: 18px;
+    }
+
+    .preview img {
+      width: 100%;
+
+      max-height: 280px;
+
+      object-fit: cover;
+
+      border-radius: 10px;
+    }
+
+    .message {
+      text-align: center;
+
+      margin-top: 14px;
+
+      min-height: 20px;
+
+      font-size: 14px;
+    }
+
+    .success {
+      color: #188038;
+    }
+
+    .error {
+      color: #c62828;
+    }
+
+    .loading {
+      display: none;
+
+      text-align: center;
+
+      color: #777;
+
+      font-size: 14px;
+
+      margin-top: 12px;
+    }
+
+  </style>
+
+</head>
+
+
+<body>
+
+
+<header>
+
+  <div class="header-inner">
+
+    <div class="logo">
+      HAVYODAY ADMIN
+    </div>
+
+    <div class="admin-text">
+      Banner Manager
+    </div>
+
+  </div>
+
+</header>
+
+
+
+<main>
+
+
+  <h1>
+    Website Banner
+  </h1>
+
+
+  <p class="subtitle">
+    Manage the banner displayed on your HAVYODAY website.
+  </p>
+
+
+
+  <!-- =====================================================
+       CURRENT BANNER
+       ===================================================== -->
+
+  <div class="card">
+
+    <h2>
+      Current Banner
+    </h2>
+
+
+    <img
+      id="currentImage"
+      class="current-image"
+      src=""
+      alt="Current Banner"
+    >
+
+
+    <div
+      id="noImage"
+      class="no-image"
+    >
+      Loading current banner...
+    </div>
+
+
+    <div
+      id="currentTitle"
+      class="current-title"
+    ></div>
+
+
+    <div
+      id="currentStatus"
+      class="status"
+    ></div>
+
+  </div>
+
+
+
+  <!-- =====================================================
+       CHANGE BANNER
+       ===================================================== -->
+
+  <div class="card">
+
+    <h2>
+      Change Banner
+    </h2>
+
+
+    <label for="title">
+      Banner Title
+    </label>
+
+
+    <input
+      id="title"
+      type="text"
+      placeholder="Example: Navratri Special Offer"
+    >
+
+
+
+    <label for="image">
+      Banner Image
+    </label>
+
+
+    <input
+      id="image"
+      type="file"
+      accept="image/*"
+    >
+
+
+
+    <!-- NEW IMAGE PREVIEW -->
+
+    <div
+      id="preview"
+      class="preview"
+    >
+
+      <img
+        id="previewImage"
+        src=""
+        alt="New Banner Preview"
+      >
+
+    </div>
+
+
+
+    <label class="active-label">
+
+      <input
+        id="isActive"
+        type="checkbox"
+      >
+
+      Show this banner on website
+
+    </label>
+
+
+
+    <button
+      id="saveBtn"
+      type="button"
+    >
+      Save Banner
+    </button>
+
+
+
+    <div
+      id="loading"
+      class="loading"
+    >
+      Saving banner...
+    </div>
+
+
+
+    <div
+      id="message"
+      class="message"
+    ></div>
+
+  </div>
+
+
+</main>
+
+
+
+<script>
+
+"use strict";
+
+
+/* =========================================================
+   SUPABASE
+   ========================================================= */
+
+const SUPABASE_URL =
+  "https://ebzvmhbmoowsmmffvgif.supabase.co";
+
+
+const SUPABASE_KEY =
+  "sb_publishable_B-y3E6yHs2LhpFHmVkmBAQ_cMCiQgzd";
+
+
+const supabaseClient =
+  window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+  );
+
+
+
+/* =========================================================
+   SETTINGS
+   ========================================================= */
+
+const BANNER_ID = 4;
+
+const BUCKET_NAME = "banners";
+
+
+
+/* =========================================================
+   ELEMENTS
+   ========================================================= */
+
+const titleInput =
+  document.getElementById("title");
+
+
+const imageInput =
+  document.getElementById("image");
+
+
+const isActiveInput =
+  document.getElementById("isActive");
+
+
+const saveBtn =
+  document.getElementById("saveBtn");
+
+
+const loading =
+  document.getElementById("loading");
+
+
+const message =
+  document.getElementById("message");
+
+
+const currentImage =
+  document.getElementById("currentImage");
+
+
+const noImage =
+  document.getElementById("noImage");
+
+
+const currentTitle =
+  document.getElementById("currentTitle");
+
+
+const currentStatus =
+  document.getElementById("currentStatus");
+
+
+const preview =
+  document.getElementById("preview");
+
+
+const previewImage =
+  document.getElementById("previewImage");
+
+
+
+/* =========================================================
+   MESSAGE
+   ========================================================= */
+
+function showMessage(
+  text,
+  type
+) {
+
+  message.textContent =
+    text;
+
+  message.className =
+    "message " +
+    (type || "");
+
+}
+
+
+
+/* =========================================================
+   LOAD CURRENT BANNER
+   ========================================================= */
+
+async function loadCurrentBanner() {
+
+  try {
+
+    noImage.textContent =
+      "Loading current banner...";
+
+    noImage.style.display =
+      "block";
+
+    currentImage.style.display =
+      "none";
+
+
+    const {
+      data,
+      error
+    } =
+      await supabaseClient
+        .from("banners")
+        .select(
+          "id,image_url,title,is_active"
+        )
+        .eq(
+          "id",
+          BANNER_ID
+        )
+        .maybeSingle();
+
+
+    if (error) {
+
+      throw error;
+
+    }
+
+
+    if (!data) {
+
+      noImage.textContent =
+        "Banner ID 4 not found.";
+
+      currentTitle.textContent =
+        "";
+
+      currentStatus.textContent =
+        "";
+
+      return;
+
+    }
+
+
+
+    /* =====================================================
+       CURRENT IMAGE
+       ===================================================== */
+
+    if (
+      data.image_url &&
+      data.image_url.trim() !== ""
+    ) {
+
+      currentImage.src =
+        data.image_url;
+
+      currentImage.style.display =
+        "block";
+
+      noImage.style.display =
+        "none";
+
+
+      currentImage.onerror =
+        function () {
+
+          currentImage.style.display =
+            "none";
+
+          noImage.textContent =
+            "Image URL saved, but image could not be loaded.";
+
+          noImage.style.display =
+            "block";
+
+        };
+
+    } else {
+
+      currentImage.style.display =
+        "none";
+
+      noImage.textContent =
+        "No banner image saved.";
+
+      noImage.style.display =
+        "block";
+
+    }
+
+
+
+    /* =====================================================
+       TITLE
+       ===================================================== */
+
+    currentTitle.textContent =
+      data.title ||
+      "No title";
+
+
+
+    /* =====================================================
+       STATUS
+       ===================================================== */
+
+    if (
+      data.is_active === true
+    ) {
+
+      currentStatus.textContent =
+        "ACTIVE";
+
+      currentStatus.className =
+        "status active";
+
+    } else {
+
+      currentStatus.textContent =
+        "HIDDEN";
+
+      currentStatus.className =
+        "status";
+
+    }
+
+
+
+    /* =====================================================
+       FORM VALUES
+       ===================================================== */
+
+    titleInput.value =
+      data.title || "";
+
+    isActiveInput.checked =
+      data.is_active === true;
+
+
+  } catch (error) {
+
+    console.error(
+      "Banner Load Error:",
+      error
+    );
+
+
+    noImage.textContent =
+      "Unable to load banner.";
+
+
+    showMessage(
+      error.message ||
+      "Unable to load banner.",
+      "error"
+    );
+
+  }
+
+}
+
+
+
+/* =========================================================
+   IMAGE PREVIEW
+   ========================================================= */
+
+imageInput.addEventListener(
+  "change",
+  function () {
+
+    const file =
+      imageInput.files[0];
+
+
+    if (!file) {
+
+      preview.style.display =
+        "none";
+
+      return;
+
+    }
+
+
+    if (
+      !file.type.startsWith("image/")
+    ) {
+
+      showMessage(
+        "Please select a valid image.",
+        "error"
+      );
+
+      imageInput.value =
+        "";
+
+      preview.style.display =
+        "none";
+
+      return;
+
+    }
+
+
+    const objectUrl =
+      URL.createObjectURL(file);
+
+
+    previewImage.src =
+      objectUrl;
+
+
+    preview.style.display =
+      "block";
+
+  }
+);
+
+
+
+/* =========================================================
+   SAVE BANNER
+   ========================================================= */
+
+async function saveBanner() {
+
+  showMessage(
+    "",
+    ""
+  );
+
+
+  const title =
+    titleInput.value.trim();
+
+
+  const file =
+    imageInput.files[0];
+
+
+  const isActive =
+    isActiveInput.checked;
+
+
+
+  /* =====================================================
+     VALIDATION
+     ===================================================== */
+
+  if (!title) {
+
+    showMessage(
+      "Please enter banner title.",
+      "error"
+    );
+
+    titleInput.focus();
+
+    return;
+
+  }
+
+
+
+  saveBtn.disabled =
+    true;
+
+
+  loading.style.display =
+    "block";
+
+
+
+  try {
+
+
+    /* =====================================================
+       STEP 1
+       GET EXISTING BANNER
+       ===================================================== */
+
+    const {
+      data: oldBanner,
+      error: oldError
+    } =
+      await supabaseClient
+        .from("banners")
+        .select(
+          "id,image_url,title,is_active"
+        )
+        .eq(
+          "id",
+          BANNER_ID
+        )
+        .maybeSingle();
+
+
+    if (oldError) {
+
+      throw oldError;
+
+    }
+
+
+    if (!oldBanner) {
+
+      throw new Error(
+        "Banner ID 4 was not found in public.banners."
+      );
+
+    }
+
+
+
+    /*
+      Keep old image if no new image selected.
+    */
+
+    let imageUrl =
+      oldBanner.image_url || "";
+
+
+
+    /* =====================================================
+       STEP 2
+       UPLOAD NEW IMAGE
+       ===================================================== */
+
+    if (file) {
+
+
+      const originalName =
+        file.name || "banner";
+
+
+      const extension =
+        originalName
+          .split(".")
+          .pop()
+          .toLowerCase();
+
+
+      const safeExtension =
+        extension || "jpg";
+
+
+      const fileName =
+        "banner-" +
+        Date.now() +
+        "-" +
+        Math.random()
+          .toString(36)
+          .substring(2, 8) +
+        "." +
+        safeExtension;
+
+
+
+      console.log(
+        "Uploading:",
+        fileName
+      );
+
+
+
+      const {
+        error: uploadError
+      } =
+        await supabaseClient
+          .storage
+          .from(BUCKET_NAME)
+          .upload(
+            fileName,
+            file,
+            {
+              cacheControl: "3600",
+              upsert: false,
+              contentType:
+                file.type
+            }
+          );
+
+
+      if (uploadError) {
+
+        throw new Error(
+          "Image upload failed: " +
+          uploadError.message
+        );
+
+      }
+
+
+
+      /* =================================================
+         GET PUBLIC URL
+         ================================================= */
+
+      const {
+        data: publicData
+      } =
+        supabaseClient
+          .storage
+          .from(BUCKET_NAME)
+          .getPublicUrl(
+            fileName
+          );
+
+
+      if (
+        !publicData ||
+        !publicData.publicUrl
+      ) {
+
+        throw new Error(
+          "Image uploaded but public URL could not be created."
+        );
+
+      }
+
+
+      imageUrl =
+        publicData.publicUrl;
+
+
+      console.log(
+        "New Image URL:",
+        imageUrl
+      );
+
+    }
+
+
+
+    /* =====================================================
+       STEP 3
+       UPDATE DATABASE
+       IMPORTANT:
+       .select() verifies actual update
+       ===================================================== */
+
+    const {
+      data: updatedBanner,
+      error: updateError
+    } =
+      await supabaseClient
+        .from("banners")
+        .update({
+
+          image_url:
+            imageUrl,
+
+          title:
+            title,
+
+          is_active:
+            isActive
+
+        })
+        .eq(
+          "id",
+          BANNER_ID
+        )
+        .select(
+          "id,image_url,title,is_active"
+        )
+        .maybeSingle();
+
+
+    if (updateError) {
+
+      throw new Error(
+        "Database update failed: " +
+        updateError.message
+      );
+
+    }
+
+
+
+    /* =====================================================
+       VERIFY UPDATE
+       ===================================================== */
+
+    if (!updatedBanner) {
+
+      throw new Error(
+        "Database row was not updated. Check UPDATE policy for public.banners."
+      );
+
+    }
+
+
+
+    if (
+      !updatedBanner.image_url
+    ) {
+
+      throw new Error(
+        "Banner saved but image_url is empty in database."
+      );
+
+    }
+
+
+
+    console.log(
+      "Updated Banner:",
+      updatedBanner
+    );
+
+
+
+    /* =====================================================
+       SUCCESS
+       ===================================================== */
+
+    showMessage(
+      "Banner saved successfully!",
+      "success"
+    );
+
+
+    imageInput.value =
+      "";
+
+
+    preview.style.display =
+      "none";
+
+
+
+    /* =====================================================
+       RELOAD FROM DATABASE
+       ===================================================== */
+
+    await loadCurrentBanner();
+
+
+  } catch (error) {
+
+    console.error(
+      "Banner Save Error:",
+      error
+    );
+
+
+    showMessage(
+      error.message ||
+      "Banner could not be saved.",
+      "error"
+    );
+
+  } finally {
+
+    saveBtn.disabled =
+      false;
+
+    loading.style.display =
+      "none";
+
+  }
+
+}
+
+
+
+/* =========================================================
+   SAVE BUTTON
+   ========================================================= */
+
+saveBtn.addEventListener(
+  "click",
+  saveBanner
+);
+
+
+
+/* =========================================================
+   INITIAL LOAD
+   ========================================================= */
+
+loadCurrentBanner();
+
+</script>
+
+
+</body>
+</html>
